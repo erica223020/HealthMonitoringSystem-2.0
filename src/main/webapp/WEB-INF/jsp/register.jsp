@@ -21,7 +21,7 @@
                 <div class="register-card">
                     <div class="text-center mb-4">
                         <!-- 使用上下文路徑引用圖片 -->
-                        <img src="${pageContext.request.contextPath}/static/icons/LifeGuard%20white.png" alt="Logo" class="img-fluid" />
+                        <img src="${pageContext.request.contextPath}/static/icons/LifeGuardWhite.png" alt="Logo" class="img-fluid" />
                     </div>
                     <c:if test="${not empty registerError}">
                         <div class="alert alert-danger">${registerError}</div>
@@ -55,7 +55,7 @@
                     </form>
                     <div class="mt-3 text-center">
                         <!-- 使用上下文路徑來引用登入頁面 -->
-                        <a href="${pageContext.request.contextPath}/login.jsp">已經有帳號了？立即登入</a>
+                        <a href="${pageContext.request.contextPath}/login">已經有帳號了？立即登入</a>
                     </div>
                 </div>
             </div>
