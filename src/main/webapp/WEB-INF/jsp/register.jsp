@@ -25,9 +25,6 @@
                         <!-- 使用上下文路徑引用圖片 -->
                         <img src="${pageContext.request.contextPath}/static/icons/LifeGuardWhite.png" alt="Logo" class="img-fluid" />
                     </div>
-                    <c:if test="${not empty registerError}">
-                        <div class="alert alert-danger">${registerError}</div>
-                    </c:if>
                     <form method="post" action="${pageContext.request.contextPath}/user/register">
                         <div class="mb-3">
                             <label for="registerUsername" class="form-label">使用者名稱</label>

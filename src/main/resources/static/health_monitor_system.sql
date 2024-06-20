@@ -10,6 +10,7 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,  -- 用戶的電子郵件地址，必須唯一且不得為空
     password VARCHAR(255) NOT NULL,  -- 用戶的密碼，不得為空
     username VARCHAR(50) NOT NULL,  -- 用戶名，非空
+    gender ENUM('male', 'female', 'other') NOT NULL DEFAULT 'other',  -- 性別，非空，預設值為 'other'
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 用戶註冊的時間，自動設置為當前時間
     status ENUM('pending', 'active', 'inactive') DEFAULT 'pending'  -- 用戶帳戶的狀態，預設為 'pending'
 );

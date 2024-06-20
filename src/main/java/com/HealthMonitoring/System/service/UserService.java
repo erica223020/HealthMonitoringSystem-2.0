@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.ObjectFactory;
+
 @Service
 public class UserService {
 
@@ -15,8 +18,17 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // 登錄方法：檢查用戶的 email 和密碼
-    public boolean login(String email, String password) {
+    @Autowired
+    private ObjectFactory<HttpServletRequest> requestFactory;
+
+    // 登錄方法：檢查用戶的 email 和密碼，並驗證驗證碼
+    public boolean login(String email, String password, String captcha) {
+        HttpServletRequest request = requestFactory.getObject();
+        String sessionCaptcha = (String) request.getSession().getAttribute("captcha");
+        if (sessionCaptcha == null || !sessionCaptcha.equalsIgnoreCase(captcha)) {
+            return false; // 驗證碼錯誤
+        }
+
         User user = userDao.findByEmail(email);
         return user != null && passwordEncoder.matches(password, user.getPassword());
     }
@@ -31,22 +43,20 @@ public class UserService {
         // 加密密碼
         String encodedPassword = passwordEncoder.encode(password);
 
-        // 創建新用戶對象
-        User newUser = new User(null, email, username, encodedPassword, gender, "active", null);
+        // 創建新用戶對象，使用建造者模式
+        User newUser = User.builder()
+                           .email(email)
+                           .username(username)
+                           .password(encodedPassword)
+                           .gender(gender)
+                           .build();
 
         try {
-        	 // 保存用戶到數據庫
+            // 保存用戶到數據庫
             int rowsAffected = userDao.save(newUser);
-            if (rowsAffected > 0) {
-            	System.out.print("用戶 {} 註冊成功");
-                return true;
-            } else {
-            	System.out.println("用戶 {} 註冊失敗，受影響的行數: {}");
-                return false;
-            }
+            return rowsAffected > 0;
         } catch (Exception e) {
             // 處理可能的異常
-        	System.out.print("註冊用戶 {} 時出現異常: {}");
             return false;
         }
     }

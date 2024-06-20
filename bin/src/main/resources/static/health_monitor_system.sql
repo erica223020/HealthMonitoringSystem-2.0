@@ -1,5 +1,5 @@
--- 重新建立名為 health_monitoring_system 的資料庫
-CREATE DATABASE health_monitoring_system;
+-- 重新建立名為 health_monitor_system 的資料庫
+CREATE DATABASE health_monitor_system;
 
 -- 使用新的資料庫
 USE health_monitoring_system;

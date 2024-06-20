@@ -25,7 +25,7 @@
                     <c:if test="${not empty registerError}">
                         <div class="alert alert-danger">${registerError}</div>
                     </c:if>
-                    <form method="post" action="/user/register">
+                    <form method="post" action="/user/login">
                         <div class="mb-3">
                             <label for="email" class="form-label">使用者信箱</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="請輸入信箱" required />
@@ -39,15 +39,16 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" id="captcha" name="captcha" placeholder="請輸入驗證碼" required />
                                 <div class="input-group-append">
-                                    <span class="input-group-text p-0 border-0">
-                                        <img src="${pageContext.request.contextPath}/captcha" alt="Captcha Image" style="height: 100%;"/>
-                                    </span>
+                                     <img src="${pageContext.request.contextPath}/captcha" alt="Captcha Image" style="height: 30px; width: 100px;"/>
                                 </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">註冊</button>
                         <a href="${pageContext.request.contextPath}/login" class="btn btn-secondary w-100 mt-2">登入</a>
                     </form>
+                                <div class="mt-3 text-center">
+              <a href="#">忘記密碼或帳號？</a>
+            </div>
                 </div>
             </div>
             <div class="info-section"></div>
