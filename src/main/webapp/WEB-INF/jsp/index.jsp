@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HealthMonitoringSystem | 健康監控系統</title>
     <meta name="description" content="HealthMonitoringSystem 提供健康數據監控和管理功能，幫助您保持健康生活。" />
-    <link rel="icon" href="<c:url value='/icons/LifeGuard.png' />" type="image/png" />
+    <link rel="icon" href="${pageContext.request.contextPath}/static/icons/LifeGuard.png" type="image/png" />
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous" />
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css" />
     <!-- 日期選擇器 Air datepicker Css -->
     <link href="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="<c:url value='/scss/all.css' />" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css" />
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/d6b833583a.js" crossorigin="anonymous"></script>
 </head>
@@ -62,16 +62,16 @@
         </nav>
         <!-- Sidebar -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            <a href="#" class="brand-link d-flex align-items-center">
+            <a href="index" class="brand-link d-flex align-items-center">
                 <div class="logo-wrapper">
-                    <img src="<c:url value='/icons/LifeGuardLogo.png' />" alt="Logo" class="brand-image img-circle elevation-3 mt-1 mb-1" />
+                    <img src="${pageContext.request.contextPath}/static/icons/LifeGuardLogo.png" alt="Logo" class="brand-image img-circle elevation-3 mt-1 mb-1" />
                 </div>
                 <span class="brand-text font-weight-light ms-2">Life Guard</span>
             </a>
             <div class="sidebar">
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="<c:url value='/images/sticker.jpg' />" class="img-circle elevation-2" alt="User Image" />
+                        <img src="${pageContext.request.contextPath}/static/images/sticker.jpg" class="img-circle elevation-2" alt="User Image" />
                     </div>
                     <div class="info">
                         <a href="#" class="d-block">Rich Ting</a>
@@ -79,12 +79,6 @@
                 </div>
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-                        <li class="nav-item">
-                            <a href="index.jsp" class="nav-link active">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>首頁</p>
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a href="addRecord.jsp" class="nav-link">
                                 <i class="nav-icon fas fa-plus"></i>

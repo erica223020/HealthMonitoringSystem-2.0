@@ -40,17 +40,22 @@ public class UserController {
         return "dataAnalysis"; // 返回 dataAnalysis.jsp
     }
 
-    @PostMapping("/register")
+    @PostMapping("/user/register")
     public String register(@RequestParam("email") String email,
                            @RequestParam("username") String username,
                            @RequestParam("password") String password,
                            @RequestParam("confirmPassword") String confirmPassword,
                            @RequestParam("gender") String gender,
                            Model model) {
+    	
+    	// 日誌記錄
+        System.out.println("Received registration request with email: " + email);
+    	// 1. 檢查密碼是否匹配
         if (!password.equals(confirmPassword)) {
             model.addAttribute("registerError", "密碼不匹配");
             return "register";
         }
+        // 2. 調用服務層進行註冊處理
         boolean success = userService.register(email, username, password, gender);
         if (success) {
             return "redirect:/login"; // 註冊成功，重定向到登入頁面

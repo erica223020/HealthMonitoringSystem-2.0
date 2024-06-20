@@ -3,6 +3,7 @@ package com.HealthMonitoring.System.dao;
 import com.HealthMonitoring.System.model.po.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -19,7 +20,11 @@ public class UserDao {
 
     public User findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{email}, new UserRowMapper());
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{email}, new UserRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            return null; // 當找不到匹配的記錄時返回 null
+        }
     }
 
     public int save(User user) {

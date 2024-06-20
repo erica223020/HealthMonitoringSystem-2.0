@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css" />
     <!-- 使用上下文路徑引用自定義 CSS 文件 -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/register.css" />
+	<!-- 引入 SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.0/dist/sweetalert2.min.css">
 </head>
 <body>
     <div class="container">
@@ -64,5 +66,20 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+	!-- 引入 SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.0/dist/sweetalert2.all.min.js"></script>
+	    <!-- 檢查是否有註冊錯誤並顯示 SweetAlert -->
+    <script>
+        window.onload = function() {
+            <% if (request.getAttribute("registerError") != null) { %>
+                Swal.fire({
+                    icon: 'error',
+                    title: '註冊失敗',
+                    text: '<%= request.getAttribute("registerError") %>',
+                    confirmButtonText: '重試'
+                });
+            <% } %>
+        };
+    </script>
 </body>
 </html>
