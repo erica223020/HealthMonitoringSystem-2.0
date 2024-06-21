@@ -1,0 +1,193 @@
+body,
+html {
+  height: 100%;
+  margin: 0;
+  font-family: "Source Sans Pro", "Noto Sans TC", "微軟正黑體", sans-serif; /* 使用 AdminLTE 的字體 */
+  background-color: black; /* Set the background color to black */
+  overflow: hidden; /* Prevent scrollbars */
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ensure full height to avoid cutting */
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7); /* Dark overlay */
+  box-sizing: border-box; /* Include padding in height calculations */
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: row;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  overflow: hidden; /* Ensure the border radius applies to all children */
+  max-width: 1000px;
+  width: 100%;
+  max-height: 90vh; /* Limit the height to 90% of the viewport height */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Add shadow for better visibility */
+  box-sizing: border-box; /* Include padding in width calculations */
+  flex: 1; /* Allow the form-wrapper to grow and shrink */
+  overflow: auto; /* Allow internal scrolling if necessary */
+}
+
+.register-section,
+.login-section {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px 40px; /* Add padding to adjust space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 300px; /* Prevent too narrow layout on small screens */
+  box-sizing: border-box; /* Include padding in width calculations */
+  overflow: hidden; /* Prevent internal overflow */
+}
+
+.register-card,
+.login-card {
+  width: 100%;
+  flex: 1; /* Allow content to grow and shrink */
+}
+
+.register-card .form-label,
+.login-card .form-label {
+  color: white;
+}
+
+.register-card .form-control,
+.login-card .form-control {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3); /* Lighter color for the border */
+  border-radius: 0;
+  color: white;
+  transition: border-color 0.3s;
+  margin-bottom: 10px; /* Add space between inputs */
+}
+
+.register-card .form-control:focus,
+.login-card .form-control:focus,
+.register-card .form-control:hover,
+.login-card .form-control:hover {
+  border-color: white; /* Bright color on focus or hover */
+  box-shadow: none;
+}
+
+.register-card .form-control::placeholder,
+.login-card .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.register-card select.form-control {
+  color: white; /* Set text color for the select element */
+  background: transparent; /* Make the background transparent */
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+  appearance: none; /* Remove default arrow */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 10px center; /* Position the arrow */
+  padding-right: 30px; /* Space for the arrow */
+  transition: border-color 0.3s;
+}
+
+.register-card select.form-control:focus,
+.register-card select.form-control:hover {
+  border-color: white; /* Change border color on focus or hover */
+  box-shadow: none;
+}
+
+.register-card select.form-control option {
+  color: black; /* Options should have a readable text color */
+}
+
+.register-card .btn,
+.login-card .btn {
+  border-radius: 25px;
+  border: none;
+  font-size: 18px;
+  padding: 10px 0px;
+  transition: background 0.3s, color 0.3s;
+  margin-top: 20px; /* Adjust space between inputs and buttons */
+}
+
+.register-card .btn-primary,
+.login-card .btn-primary {
+  background: rgba(54, 90, 164);
+  color: rgb(211, 211, 211);
+  margin-bottom: 10px;
+}
+
+.register-card .btn-primary:hover,
+.login-card .btn-primary:hover {
+  background: rgb(28, 58, 119);
+  color: white;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: url("../images/background.jpg") no-repeat center center; /* Add your image URL here */
+  background-size: cover; /* Cover the entire section with the image */
+  padding: 40px;
+  flex: 1;
+  text-align: center;
+  position: relative; /* Required to position the overlay correctly */
+  overflow: hidden; /* Prevent internal overflow */
+}
+
+.info-section .content {
+  z-index: 2;
+}
+
+.info-section h1 {
+  font-size: 32px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.info-section p {
+  font-size: 18px;
+  line-height: 1.5;
+  color: white;
+}
+
+.text-center a {
+  color: rgb(47, 86, 165);
+  text-decoration: none;
+}
+
+.text-center a:hover {
+  text-decoration: underline;
+}
+
+/* Hide the info-section on smaller screens */
+@media (max-width: 991px) {
+  .info-section {
+    display: none; /* Hide info-section for screens smaller than 992px */
+  }
+}
+
+@media (min-width: 992px) {
+  .info-section {
+    display: flex; /* Show only on larger screens */
+  }
+}
+
+/* Ensure the form-wrapper does not overflow vertically */
+@media (max-height: 700px) {
+  .form-wrapper {
+    flex-direction: column; /* Stack sections vertically */
+    max-height: 90vh; /* Use 90% of viewport height */
+  }
+  .register-section,
+  .login-section,
+  .info-section {
+    padding: 20px; /* Reduce padding to fit content */
+  }
+}
