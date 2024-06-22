@@ -79,7 +79,21 @@ body .modal.fade .modal-dialog {
   transform: translateY(0);
   opacity: 1;
 }
+/* 初始状态下，通知菜单是隐藏的，透明度为0，最大高度为0 */
+.dropdown-menu {
+    display: none; /* 隐藏菜单 */
+    opacity: 0; /* 透明度为0 */
+    max-height: 0; /* 初始高度为0 */
+    overflow: hidden; /* 隐藏内容溢出 */
+    transition: opacity 0.5s ease, max-height 0.5s ease; /* 添加过渡效果 */
+}
 
+/* 当菜单显示时 */
+.dropdown-menu.show {
+    display: block; /* 显示菜单 */
+    opacity: 1; /* 透明度为1 */
+    max-height: 500px; /* 设置最大高度为内容的估计高度 */
+}
 @media (max-width: 768px) {
   /* 確保側邊欄和內容區域不會導致滾動條出現 */
   html,

@@ -52,11 +52,11 @@
                     </div>
                 </li>
                 <li class="nav-item d-sm-inline-block">
-                    <form method="post" action="<c:url value='/user/logout' />" aria-label="登出">
-                        <button type="submit" class="btn btn-danger" style="font-weight: bold">
-                            <i class="fas fa-sign-out-alt"></i> 登出
-                        </button>
-                    </form>
+<form id="logoutForm" method="post" action="<c:url value='/user/logout' />" aria-label="登出">
+    <button type="button" class="btn btn-danger" style="font-weight: bold" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> 登出
+    </button>
+</form>
                 </li>
             </ul>
         </nav>
@@ -277,6 +277,123 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="<c:url value='/scripts/all.js' />"></script>
-    <!-- Custom JS for Dropdown Animation -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 初始化 AdminLTE 的 PushMenu 功能
+        if (typeof $ !== 'undefined' && $.fn.PushMenu) {
+            $('[data-widget="pushmenu"]').PushMenu();
+        }
+
+        // 處理通知項目，初始化時檢查已讀狀態
+        const notificationItems = document.querySelectorAll(".notification-item");
+        notificationItems.forEach((item) => {
+            const notificationText = item.textContent.trim();
+            if (localStorage.getItem("read-" + notificationText)) {
+                item.classList.add("read");
+            }
+
+            // 點擊後標記為已讀
+            item.addEventListener("click", function () {
+                this.classList.add("read");
+                localStorage.setItem("read-" + notificationText, "true");
+                // 這裡可以添加代碼來通知伺服器該通知已讀
+                // markAsReadOnServer(this); // 假設有一個函數用來通知伺服器已讀狀態
+            });
+        });
+
+        // 處理通知鈴鐺的點擊事件
+        const notificationDropdown = document.getElementById("notificationDropdown");
+        const dropdownMenu = document.querySelector(".dropdown-menu");
+        const notificationBadge = document.getElementById("notificationBadge");
+
+        if (notificationDropdown && dropdownMenu && notificationBadge) {
+            // 檢查是否有新通知
+            function checkNewNotifications() {
+                const hasNewNotifications = true; // 模擬有新消息，實際應根據後端狀態來設置
+                if (hasNewNotifications) {
+                    notificationBadge.style.display = "block";
+                } else {
+                    notificationBadge.style.display = "none";
+                }
+            }
+
+            // 點擊鈴鐺顯示或隱藏通知
+            notificationDropdown.addEventListener("click", function (event) {
+                event.preventDefault();
+                if (dropdownMenu.classList.contains("show")) {
+                    dropdownMenu.classList.remove("show");
+                    // 使用 requestAnimationFrame 确保过渡效果触发
+                    requestAnimationFrame(() => {
+                        dropdownMenu.style.opacity = "0";
+                    });
+                    setTimeout(() => {
+                        dropdownMenu.style.display = "none";
+                    }, 500); // 讓transition生效
+                } else {
+                    dropdownMenu.style.display = "block";
+                    // 使用 requestAnimationFrame 确保过渡效果触发
+                    requestAnimationFrame(() => {
+                        dropdownMenu.classList.add("show");
+                        dropdownMenu.style.opacity = "1";
+                        dropdownMenu.style.maxHeight = "500px"; // 设置最大高度为内容的估计高度
+                    });
+                    notificationBadge.style.display = "none"; // 点击后隐藏红点
+                }
+            });
+
+
+            // 點擊頁面其他部分時隱藏通知
+            document.addEventListener("click", function (event) {
+                if (
+                    !notificationDropdown.contains(event.target) &&
+                    !dropdownMenu.contains(event.target)
+                ) {
+                    dropdownMenu.classList.remove("show");
+                    requestAnimationFrame(() => {
+                        dropdownMenu.style.opacity = "0";
+                    });
+                    setTimeout(() => {
+                        dropdownMenu.style.display = "none";
+                    }, 500);
+                }
+            });
+
+            checkNewNotifications(); // 初始化檢查通知
+        }
+    });
+    function handleLogout() {
+        Swal.fire({
+            title: '確認登出?',
+            text: "您確定要登出嗎?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d21f3c', // 紅色確認按鈕
+            cancelButtonColor: '#6c757d', // 灰色取消按鈕
+            background: '#343a40', // 背景顏色設置為深色
+            color: '#ffffff', // 文字顏色設置為白色
+            confirmButtonText: '是的, 我要登出!',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // 顯示成功消息並等待轉跳
+                Swal.fire({
+                    icon: 'success',
+                    title: '登出成功',
+                    text: '轉跳中...',
+                    background: '#343a40', // 背景顏色設置為深色
+                    color: '#ffffff', // 文字顏色設置為白色
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    willClose: () => {
+                        // 當計時器完成時立即轉跳
+                        window.location.href = '${pageContext.request.contextPath}/login';
+                    }
+                });
+            }
+        });
+    }
+	</script>
 </body>
 </html>
