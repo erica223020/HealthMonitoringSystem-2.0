@@ -5,14 +5,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>註冊 | HealthMonitoringSystem</title>
+    <title>登入 | HealthMonitoringSystem</title>
     <link rel="icon" href="${pageContext.request.contextPath}/static/icons/LifeGuard.png" type="image/png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/login.css" />
     <!-- SweetAlert CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.0/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.0/dist/sweetalert2.min.css">	
 </head>
 <body>
     <div class="container">
@@ -22,10 +22,7 @@
                     <div class="text-center mb-4">
                         <img src="${pageContext.request.contextPath}/static/icons/LifeGuardWhite.png" alt="Logo" class="img-fluid" />
                     </div>
-                    <c:if test="${not empty registerError}">
-                        <div class="alert alert-danger">${registerError}</div>
-                    </c:if>
-                    <form method="post" action="/user/login">
+                    <form method="post" action="${pageContext.request.contextPath}/user/login">
                         <div class="mb-3">
                             <label for="email" class="form-label">使用者信箱</label>
                             <input type="email" class="form-control" id="email" name="email" placeholder="請輸入信箱" required />
@@ -43,8 +40,8 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">註冊</button>
-                        <a href="${pageContext.request.contextPath}/login" class="btn btn-secondary w-100 mt-2">登入</a>
+                        <button type="submit" class="btn btn-primary w-100">登入</button>
+                        <a href="${pageContext.request.contextPath}/register" class="btn btn-secondary w-100 mt-2">註冊</a>
                     </form>
                                 <div class="mt-3 text-center">
               <a href="#">忘記密碼或帳號？</a>
@@ -58,15 +55,63 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
     <!-- SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.0/dist/sweetalert2.all.min.js"></script>
-    <script>
-        // 使用SweetAlert顯示註冊錯誤消息
-        <c:if test="${not empty registerError}">
-            Swal.fire({
-                icon: 'error',
-                title: '錯誤',
-                text: '${registerError}',
-            });
-        </c:if>
+ <script>
+ $(document).ready(function() {
+     // 檢查是否有錯誤信息並顯示警告
+     <c:if test="${not empty captchaError}">
+         Swal.fire({
+             icon: 'error',
+             title: '驗證碼錯誤',
+             text: '${captchaError}',
+             background: '#343a40', // 背景顏色設置為深色
+             color: '#ffffff' // 文字顏色設置為白色
+         });
+     </c:if>
+     <c:if test="${not empty loginError}">
+         Swal.fire({
+             icon: 'error',
+             title: '登入失敗',
+             text: '${loginError}',
+             background: '#343a40', // 背景顏色設置為深色
+             color: '#ffffff' // 文字顏色設置為白色
+         });
+     </c:if>
+     <c:if test="${not empty loginSuccess}">
+         Swal.fire({
+             icon: 'success',
+             title: '登入成功',
+             text: '轉跳中...',
+             background: '#343a40', // 背景顏色設置為深色
+             color: '#ffffff', // 文字顏色設置為白色
+             showConfirmButton: false,
+             timer: 1500,
+             timerProgressBar: true,
+             willClose: () => {
+                 window.location.href = '${pageContext.request.contextPath}/index';
+             }
+         });
+     </c:if>
+ });
+ 
+ // 當鏈接點擊時，顯示深色Loading SweetAlert
+ $('a').on('click', function(event) {
+     var target = $(this).attr('href');
+     if (target && target[0] === '#') return;
+     event.preventDefault();
+     Swal.fire({
+     	title: '<span style="color: #ffffff;">請稍候</span>',
+         html: '<span style="color: #ffffff;">正在轉跳中...</span>',
+         background: '#343a40', // 背景顏色設置為深色
+         color: '#ffffff', // 文字顏色設置為白色
+         allowOutsideClick: false,
+         didOpen: () => {
+             Swal.showLoading();
+         }
+     });
+     setTimeout(function() {
+         window.location.href = target;
+     }, 1000); // 延遲1秒以顯示loading效果
+ });
     </script>
 </body>
 </html>
