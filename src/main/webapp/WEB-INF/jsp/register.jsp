@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
 <head>
@@ -65,18 +66,81 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
 	!-- 引入 SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.0/dist/sweetalert2.all.min.js"></script>
-	    <!-- 檢查是否有註冊錯誤並顯示 SweetAlert -->
+   <!-- 檢查是否有註冊錯誤或成功信息並顯示 SweetAlert -->
     <script>
-        window.onload = function() {
-            <% if (request.getAttribute("registerError") != null) { %>
+        $(document).ready(function() {
+            // 當表單提交時，顯示 Loading SweetAlert
+            $('form').on('submit', function(event) {
                 Swal.fire({
-                    icon: 'error',
-                    title: '註冊失敗',
-                    text: '<%= request.getAttribute("registerError") %>',
-                    confirmButtonText: '重試'
+                    title: '<span style="color: #ffffff;">請稍候</span>',
+                    html: '<span style="color: #ffffff;">正在處理您的請求...</span>',
+                    background: '#343a40',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
                 });
-            <% } %>
-        };
+            });
+            
+         // 當鏈接點擊時，顯示深色Loading SweetAlert
+            $('a').on('click', function(event) {
+                var target = $(this).attr('href');
+                if (target && target[0] === '#') return;
+                event.preventDefault();
+                Swal.fire({
+                	title: '<span style="color: #ffffff;">請稍候</span>',
+                    html: '<span style="color: #ffffff;">正在轉跳中...</span>',
+                    background: '#343a40', // 背景顏色設置為深色
+                    color: '#ffffff', // 文字顏色設置為白色
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                setTimeout(function() {
+                    window.location.href = target;
+                }, 1000); // 延遲1秒以顯示loading效果
+            });
+
+
+            // 檢查是否有註冊錯誤或成功信息並顯示 SweetAlert
+            window.onload = function() {
+                <c:if test="${not empty registerError}">
+                    Swal.fire({
+                        icon: 'error',
+                        title: '<span style="color: #ffffff;">註冊失敗</span>',
+                        html: '<span style="color: #ffffff;">${registerError}</span>',
+                        confirmButtonText: '<span style="color: #ffffff;">重試</span>',
+                        background: '#343a40'
+                    });
+                </c:if>
+
+                <c:if test="${not empty emailExists}">
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '<span style="color: #ffffff;">信箱已註冊</span>',
+                        html: '<span style="color: #ffffff;">${emailExists}</span>',
+                        confirmButtonText: '<span style="color: #ffffff;">重試</span>',
+                        background: '#343a40'
+                    });
+                </c:if>
+
+                <c:if test="${not empty registerSuccess}">
+                    Swal.fire({
+                        icon: 'success',
+                        title: '<span style="color: #ffffff;">註冊成功</span>',
+                        html: '<span style="color: #ffffff;">註冊成功，轉跳登入畫面請稍後...</span>',
+                        background: '#343a40',
+                        timer: 2000, // 設置提示框顯示2秒
+                        showConfirmButton: false,
+                        willClose: () => {
+                            // 當提示框即將關閉時，跳轉到登入頁面
+                            window.location.href = '${pageContext.request.contextPath}/login';
+                        }
+                    });
+                </c:if>
+            };
+        });
     </script>
 </body>
 </html>
