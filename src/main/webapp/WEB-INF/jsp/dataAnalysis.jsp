@@ -33,271 +33,93 @@
   </head>
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-      <!-- Navbar -->
-      <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"
-              ><i class="fas fa-bars"></i
-            ></a>
-          </li>
-        </ul>
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#" role="button"
-              ><i class="fas fa-search"></i
-            ></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" role="button"
-              ><i class="fas fa-bell"></i><span class="red-point"></span
-            ></a>
-          </li>
-          <li class="nav-item d-sm-inline-block">
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#loginModal"
-            >
-              登入
-            </button>
-          </li>
-        </ul>
-      </nav>
-      <!-- 登入彈跳視窗 -->
-      <div
-        class="modal fade"
-        id="loginModal"
-        tabindex="-1"
-        aria-labelledby="loginModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="loginModalLabel">登入</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <!-- 登入表單 -->
-              <form>
-                <div class="mb-3">
-                  <label for="username" class="form-label">使用者信箱</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="username"
-                    placeholder="請輸入信箱"
-                    required
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="registerPassword" class="form-label">密碼</label>
-                  <input
-                    id="inputPassword"
-                    class="form-control"
-                    type="password"
-                    pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$"
-                    placeholder="請輸入英數混合的六個字元"
-                    required="required"
-                    oninput="setCustomValidity('');"
-                    oninvalid="setCustomValidity('密碼格式含英數需至少六個字元');"
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="captchaInput" class="form-label">驗證碼</label>
-                  <div class="input-group">
-                    <div>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="captchaInput"
-                        required
-                      />
-                    </div>
-                    <img
-                      src="/api/captcha"
-                      id="captchaImage"
-                      class="ms-4"
-                      alt="Captcha"
-                    />
-                    <button
-                      type="button"
-                      id="refreshCaptcha"
-                      class="btn btn-outline-secondary m-2"
-                      style="border: none; background: none"
-                    >
-                      <i class="fas fa-sync-alt"></i>
-                      <!-- 使用 Font Awesome 的刷新符號 -->
-                    </button>
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-primary">登入</button>
-                <a
-                  href="#"
-                  class="btn btn-link position-absolute bottom-0 end-0 mb-3 me-3"
-                  data-bs-toggle="modal"
-                  data-bs-target="#registerModal"
-                  data-bs-dismiss="modal"
-                  style="position: relative; overflow: hidden"
-                  >還沒有帳號嗎?馬上註冊<span class="underline-from-left"></span
-                ></a>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- 註冊彈跳視窗 -->
-      <div
-        class="modal fade"
-        id="registerModal"
-        tabindex="-1"
-        aria-labelledby="registerModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-custom">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="registerModalLabel">註冊</h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <!-- 註冊表單 -->
-              <form method="post" action="/register">
-                <div class="mb-3">
-                  <label for="registerEmail" class="form-label"
-                    >使用者信箱</label
-                  >
-                  <input
-                    type="email"
-                    class="form-control"
-                    name="email"
-                    placeholder="請輸入要註冊的信箱"
-                    required="required"
-                    pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="registerUsername" class="form-label"
-                    >使用者名稱</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="username"
-                    placeholder="請輸入使用者名稱"
-                    required="required"
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="registerPassword" class="form-label">密碼</label>
-                  <input
-                    id="inputPassword"
-                    class="form-control"
-                    type="password"
-                    name="password"
-                    pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$"
-                    placeholder="請輸入英數混合的六個字元"
-                    required="required"
-                    oninput="setCustomValidity('');"
-                    oninvalid="setCustomValidity('密碼格式含英數需至少六個字元');"
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="confirmPassword" class="form-label"
-                    >再次確認密碼</label
-                  >
-                  <input
-                    id="ConfirmPassword"
-                    class="form-control"
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="請再次輸入密碼"
-                    required="required"
-                    oninput="setCustomValidity('');"
-                    onchange="if(document.getElementById('inputPassword').value != document.getElementById('ConfirmPassword').value){setCustomValidity('密碼與確認密碼不相同');}"
-                  />
-                </div>
-                <div class="mb-3">
-                  <label for="registerGender" class="form-label">性別</label>
-                  <select
-                    class="form-control"
-                    name="gender"
-                    required="required"
-                  >
-                    <option value="male">男</option>
-                    <option value="female">女</option>
-                    <option value="other">其他</option>
-                  </select>
-                </div>
-                <button type="submit" class="btn btn-primary">註冊</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Sidebar -->
-      <aside class="main-sidebar sidebar-dark-primary elevation-4">
-        <a href="#" class="brand-link d-flex align-items-center">
-          <img
-            src="images/LifeGuard.svg"
-            alt="Logo"
-            class="brand-image img-circle elevation-3 mt-1 mb-1"
-          />
-          <span class="brand-text font-weight-light ms-2">Life Guard</span>
-        </a>
-        <div class="sidebar">
-          <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-              <img
-                src="images/sticker.jpg"
-                class="img-circle elevation-2"
-                alt="User Image"
-              />
-            </div>
-            <div class="info">
-              <a href="#" class="d-block">Rich Ting</a>
-            </div>
-          </div>
-          <nav class="mt-2">
-            <ul
-              class="nav nav-pills nav-sidebar flex-column"
-              data-widget="treeview"
-              role="menu"
-            >
-              <li class="nav-item">
-                <a href="index.jsp" class="nav-link">
-                  <i class="nav-icon fas fa-home"></i>
-                  <p>首頁</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="addRecord.jsp" class="nav-link">
-                  <i class="nav-icon fas fa-plus"></i>
-                  <p>新增紀錄</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="dataAnalysis.jsp" class="nav-link active">
-                  <i class="nav-icon fas fa-chart-line"></i>
-                  <p>數據分析</p>
-                </a>
-              </li>
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
             </ul>
-          </nav>
-        </div>
-      </aside>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" role="button"><i class="fas fa-search"></i></a>
+                </li>
+                <li class="nav-item dropdown position-relative">
+                    <a class="nav-link" id="notificationDropdown" href="#">
+                        <i class="fas fa-bell position-relative">
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle" style="width: 10px; height: 10px" id="notificationBadge"></span>
+                        </i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" aria-labelledby="notificationDropdown">
+                        <span class="dropdown-item dropdown-header">系統通知</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item notification-item">您有新的健康數據待查看。</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item notification-item">系統更新：新增了健康指標分析功能。</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item notification-item">您的資料已成功備份。</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item notification-item">即將進行系統維護，請注意使用時間。</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item notification-item">提醒：更新您的健康目標。</a>
+                    </div>
+                </li>
+                <li class="nav-item d-sm-inline-block">
+<form id="logoutForm" method="post" action="<c:url value='/user/logout' />" aria-label="登出">
+    <button type="button" class="btn btn-danger" style="font-weight: bold" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> 登出
+    </button>
+</form>
+                </li>
+            </ul>
+        </nav>
+        <!-- Sidebar -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a href="index" class="brand-link d-flex align-items-center">
+                <div class="logo-wrapper">
+                    <img src="${pageContext.request.contextPath}/static/icons/LifeGuardLogo.png" alt="Logo" class="brand-image img-circle elevation-3 mt-1 mb-1" />
+                </div>
+                <span class="brand-text font-weight-light ms-2">Life Guard</span>
+            </a>
+            <div class="sidebar">
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        <img src="${pageContext.request.contextPath}/static/images/sticker.jpg" class="img-circle elevation-2" alt="User Image" />
+                    </div>
+                    <div class="info">
+                        <a href="#" class="d-block">Rich Ting</a>
+                    </div>
+                </div>
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                        <li class="nav-item">
+                            <a href="/addRecord" class="nav-link">
+                                <i class="nav-icon fas fa-plus"></i>
+                                <p>新增紀錄</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/dataAnalysis" class="nav-link active">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                <p>數據分析</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/goals" class="nav-link">
+                                <i class="nav-icon fas fa-bullseye"></i>
+                                <p>健康目標</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/faq" class="nav-link">
+                                <i class="nav-icon fas fa-question-circle"></i>
+                                <p>常見問題</p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </aside>
       <!-- Content Wrapper -->
       <div class="content-wrapper">
         <!-- Content Header -->
@@ -330,45 +152,122 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        var ctx = document.getElementById("healthChart").getContext("2d");
-        var chart = new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: [
-              <c:forEach var="data" items="${healthDataList}">
-                "${data.timestamp}",
-              </c:forEach>,
-            ],
-            datasets: [
-              {
-                label: "健康數據",
-                data: [
-                  <c:forEach var="data" items="${healthDataList}">
-                    ${data.value},
-                  </c:forEach>,
-                ],
-                borderColor: "rgba(75, 192, 192, 1)",
-                borderWidth: 1,
-              },
-            ],
-          },
-          options: {
-            scales: {
-              x: {
-                type: "time",
-                time: {
-                  unit: "day",
-                },
-              },
-              y: {
-                beginAtZero: true,
-              },
-            },
-          },
+    document.addEventListener("DOMContentLoaded", function () {
+        // 初始化 AdminLTE 的 PushMenu 功能
+        if (typeof $ !== 'undefined' && $.fn.PushMenu) {
+            $('[data-widget="pushmenu"]').PushMenu();
+        }
+
+        // 處理通知項目，初始化時檢查已讀狀態
+        const notificationItems = document.querySelectorAll(".notification-item");
+        notificationItems.forEach((item) => {
+            const notificationText = item.textContent.trim();
+            if (localStorage.getItem("read-" + notificationText)) {
+                item.classList.add("read");
+            }
+
+            // 點擊後標記為已讀
+            item.addEventListener("click", function () {
+                this.classList.add("read");
+                localStorage.setItem("read-" + notificationText, "true");
+                // 這裡可以添加代碼來通知伺服器該通知已讀
+                // markAsReadOnServer(this); // 假設有一個函數用來通知伺服器已讀狀態
+            });
         });
-      });
-    </script>
+
+        // 處理通知鈴鐺的點擊事件
+        const notificationDropdown = document.getElementById("notificationDropdown");
+        const dropdownMenu = document.querySelector(".dropdown-menu");
+        const notificationBadge = document.getElementById("notificationBadge");
+
+        if (notificationDropdown && dropdownMenu && notificationBadge) {
+            // 檢查是否有新通知
+            function checkNewNotifications() {
+                const hasNewNotifications = true; // 模擬有新消息，實際應根據後端狀態來設置
+                if (hasNewNotifications) {
+                    notificationBadge.style.display = "block";
+                } else {
+                    notificationBadge.style.display = "none";
+                }
+            }
+
+            // 點擊鈴鐺顯示或隱藏通知
+            notificationDropdown.addEventListener("click", function (event) {
+                event.preventDefault();
+                if (dropdownMenu.classList.contains("show")) {
+                    dropdownMenu.classList.remove("show");
+                    // 使用 requestAnimationFrame 确保过渡效果触发
+                    requestAnimationFrame(() => {
+                        dropdownMenu.style.opacity = "0";
+                    });
+                    setTimeout(() => {
+                        dropdownMenu.style.display = "none";
+                    }, 500); // 讓transition生效
+                } else {
+                    dropdownMenu.style.display = "block";
+                    // 使用 requestAnimationFrame 确保过渡效果触发
+                    requestAnimationFrame(() => {
+                        dropdownMenu.classList.add("show");
+                        dropdownMenu.style.opacity = "1";
+                        dropdownMenu.style.maxHeight = "500px"; // 设置最大高度为内容的估计高度
+                    });
+                    notificationBadge.style.display = "none"; // 点击后隐藏红点
+                }
+            });
+
+
+            // 點擊頁面其他部分時隱藏通知
+            document.addEventListener("click", function (event) {
+                if (
+                    !notificationDropdown.contains(event.target) &&
+                    !dropdownMenu.contains(event.target)
+                ) {
+                    dropdownMenu.classList.remove("show");
+                    requestAnimationFrame(() => {
+                        dropdownMenu.style.opacity = "0";
+                    });
+                    setTimeout(() => {
+                        dropdownMenu.style.display = "none";
+                    }, 500);
+                }
+            });
+
+            checkNewNotifications(); // 初始化檢查通知
+        }
+    });
+    function handleLogout() {
+        Swal.fire({
+            title: '確認登出?',
+            text: "您確定要登出嗎?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d21f3c', // 紅色確認按鈕
+            cancelButtonColor: '#6c757d', // 灰色取消按鈕
+            background: '#343a40', // 背景顏色設置為深色
+            color: '#ffffff', // 文字顏色設置為白色
+            confirmButtonText: '是的, 我要登出!',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // 顯示成功消息並等待轉跳
+                Swal.fire({
+                    icon: 'success',
+                    title: '登出成功',
+                    text: '轉跳中...',
+                    background: '#343a40', // 背景顏色設置為深色
+                    color: '#ffffff', // 文字顏色設置為白色
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    willClose: () => {
+                        // 當計時器完成時立即轉跳
+                        window.location.href = '${pageContext.request.contextPath}/login';
+                    }
+                });
+            }
+        });
+    }
+	</script>
     <!-- 日期選擇器 Air datepicker JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js"></script>
     <!-- jQuery -->
