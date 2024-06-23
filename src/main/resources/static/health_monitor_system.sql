@@ -1,26 +1,84 @@
--- 重新建立名為 health_monitor_system 的資料庫
-CREATE DATABASE health_monitor_system;
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+--
+-- Host: localhost    Database: health_monitor_system
+-- ------------------------------------------------------
+-- Server version	8.0.37
 
--- 使用新的資料庫
-USE health_monitoring_system;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+--
+-- Table structure for table `health_data`
+--
 
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,  -- 用戶的唯一標識符，自動遞增
-    email VARCHAR(100) UNIQUE NOT NULL,  -- 用戶的電子郵件地址，必須唯一且不得為空
-    password VARCHAR(255) NOT NULL,  -- 用戶的密碼，不得為空
-    username VARCHAR(50) NOT NULL,  -- 用戶名，非空
-    gender ENUM('male', 'female', 'other') NOT NULL DEFAULT 'other',  -- 性別，非空，預設值為 'other'
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 用戶註冊的時間，自動設置為當前時間
-    status ENUM('pending', 'active', 'inactive') DEFAULT 'pending'  -- 用戶帳戶的狀態，預設為 'pending'
-);
+DROP TABLE IF EXISTS `health_data`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `health_data` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `data_type` enum('weight','blood_sugar','blood_pressure','heart_rate') NOT NULL,
+  `value` float NOT NULL,
+  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `health_data_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE health_data (
-    id INT AUTO_INCREMENT PRIMARY KEY,  -- 每條健康數據的唯一標識符，自動遞增
-    user_id INT NOT NULL,  -- 這條數據所屬的用戶ID，對應users表的id
-    data_type ENUM('weight', 'blood_sugar', 'blood_pressure', 'heart_rate') NOT NULL,  -- 數據類型
-    value FLOAT NOT NULL,  -- 數據值，不得為空
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- 數據記錄的時間，自動設置為當前時間
-    FOREIGN KEY (user_id) REFERENCES users(id)  -- 外鍵，關聯到users表的id
-);
+--
+-- Dumping data for table `health_data`
+--
 
+LOCK TABLES `health_data` WRITE;
+/*!40000 ALTER TABLE `health_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `health_data` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `gender` enum('male','female','other') NOT NULL DEFAULT 'other',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('pending','active','inactive') DEFAULT 'pending',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-06-24  3:10:34
