@@ -32,6 +32,7 @@ public class UserDao {
             return null; // 如果沒有找到，返回 null
         }
     }
+    
 
     public int save(User user) {
         String sql = "INSERT INTO users (email, username, password, gender, status, created_at) VALUES (?, ?, ?, ?, ?, ?)";

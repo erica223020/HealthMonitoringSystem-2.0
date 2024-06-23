@@ -90,10 +90,8 @@ public class UserService {
         try {
         	 // 保存用戶到數據庫
             int rowsAffected = userDao.save(newUser);
-            logger.info("New user registered with email: {}", email);
             return rowsAffected > 0;
         } catch (Exception e) {
-            logger.error("Error registering user with email: {}", email, e);
             return false;
         }
     }

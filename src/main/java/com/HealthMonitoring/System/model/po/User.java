@@ -25,4 +25,5 @@ public class User {
     // 使用 Lombok 的 @Builder.Default 設定默認值
     @Builder.Default
     private Timestamp createdAt = Timestamp.from(Instant.now()); // 註冊時間，默認為當前時間
+
 }
