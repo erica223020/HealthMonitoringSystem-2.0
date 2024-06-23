@@ -17,9 +17,10 @@ public class SecurityConfig {
                 .anyRequest().permitAll() // 允許所有請求
             )
             .formLogin(formLogin -> formLogin
+            	.usernameParameter("email")                  // 使用信箱作為用戶名
                 .loginPage("/login")                      // 1. 設置自定義的登錄頁面 URL。
-                .loginProcessingUrl("/user/login")        // 2. 指定處理登錄請求的 URL。
-                .defaultSuccessUrl("/", true)             // 3. 指定登錄成功後的重定向 URL。
+                .loginProcessingUrl("/user/userLogin")        // 2. 指定處理登錄請求的 URL。
+                .defaultSuccessUrl("/index", true)             // 3. 指定登錄成功後的重定向 URL。
                 .failureUrl("/login?error=true")          // 4. 設置登錄失敗後的重定向 URL。
                 .permitAll()                              // 5. 允許所有用戶訪問這些登錄相關的 URL。
             )
