@@ -2,10 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>新增數據 | HealthMonitoringSystem </title>
+    <title>健康目標 | HealthMonitoringSystem </title>
     <link rel="icon" href="${pageContext.request.contextPath}/static/icons/LifeGuard.png" type="image/png" />
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous" />
@@ -17,7 +17,7 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/d6b833583a.js" crossorigin="anonymous"></script>
 </head>
-<body class="hold-transition sidebar-mini">
+  <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -79,7 +79,7 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
                         <li class="nav-item">
-                            <a href="/addRecord" class="nav-link active">
+                            <a href="/addRecord" class="nav-link">
                                 <i class="nav-icon fas fa-plus"></i>
                                 <p>新增紀錄</p>
                             </a>
@@ -91,7 +91,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/goals" class="nav-link">
+                            <a href="/goals" class="nav-link active">
                                 <i class="nav-icon fas fa-bullseye"></i>
                                 <p>健康目標</p>
                             </a>
@@ -106,40 +106,26 @@
                 </nav>
             </div>
         </aside>
- <!-- Content Wrapper -->
-        <div class="content-wrapper">
-            <!-- Content Header -->
-            <section class="content-header">
-                <div class="container-fluid">
-                    <div class="row mb-2">
-                        <div class="col-sm-6">
-                            <h1>健康數據列表</h1>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- Main content -->
-            <section class="content">
-                <div class="container-fluid">
-                    <!-- 數據列表 -->
-                    <h2 class="mt-5">健康數據列表</h2>
-                    <table class="table table-bordered table-custom">
-                        <thead>
-                            <tr>
-                                <th>日期</th>
-                                <th>數據類型</th>
-                                <th>數值</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="healthDataTable">
-                            <!-- 健康數據將通過JavaScript動態加載 -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
-        <!-- Footer -->
+      <!-- Content Wrapper -->
+      <div class="content-wrapper">
+        <!-- Content Header -->
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1>健康目標</h1>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <canvas id="healthChart"></canvas>
+          </div>
+        </section>
+      </div>
+      <!-- Footer -->
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">版本 1.0</div>
             <strong>版權所有 &copy; 2024 Ting健康監控系統</strong> 保留所有權利.
@@ -272,92 +258,6 @@
             }
         });
     }
- // 提交健康數據的AJAX函數
-    function submitHealthData() {
-        const dataType = document.getElementById('dataType').value;
-        const value = document.getElementById('value').value;
-        
-        const healthData = {
-            userId: 1, // 使用一個固定的用戶ID，可以改為動態的
-            dataType: dataType,
-            value: parseFloat(value),
-            timestamp: new Date().toISOString() // 使用當前時間
-        };
-
-        fetch('/health-data/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(healthData)
-        })
-        .then(response => response.text())
-        .then(result => {
-            // 刷新數據列表
-            loadHealthData();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    // 刪除健康數據的AJAX函數
-    function deleteHealthData(id) {
-        if (confirm('確定要刪除這條數據嗎？')) {
-            fetch('/health-data/delete/' + id, {
-                method: 'DELETE'
-            })
-            .then(response => response.text())
-            .then(result => {
-                alert(result);
-                // 刷新數據列表
-                loadHealthData();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    }
-
- // 加載健康數據的函數
-    function loadHealthData() {
-        fetch('/health-data/user/1', { // 使用固定用戶ID來加載數據，可以改為動態的
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const tbody = document.getElementById('healthDataTable');
-            tbody.innerHTML = ''; // 清空當前的數據列表
-            data.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.timestamp}</td>
-                    <td>${item.dataType}</td>
-                    <td>${item.value}</td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteHealthData(${item.id})">刪除</button>
-                        <button type="button" class="btn btn-warning btn-sm" onclick="editHealthData(${item.id})">修改</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    // 修改健康數據的函數（可以用來加載編輯頁面或顯示編輯表單）
-    function editHealthData(id) {
-        // 這裡可以添加代碼來加載編輯頁面或顯示編輯表單
-        // 比如：
-        // window.location.href = '/health-data/edit/' + id;
-        // 或者使用AJAX加載數據並顯示在當前頁面上
-        alert('Edit功能尚未實現');
-    }
-</script>
+	</script>
 </body>
 </html>

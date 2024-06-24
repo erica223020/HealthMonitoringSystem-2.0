@@ -381,7 +381,7 @@
                     icon: 'success',
                     title: '登出成功',
                     text: '轉跳中...',
-                    background: '#343a40', // 背景顏色設置為深色
+                    background: '#3d454d', // 背景顏色設置為深色
                     color: '#ffffff', // 文字顏色設置為白色
                     showConfirmButton: false,
                     timer: 1500,

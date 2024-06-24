@@ -5,32 +5,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HealthMonitoringSystem | 健康數據圖表</title>
-    <link rel="icon" href="${pageContext.request.contextPath}/static/icons/LifeGuard.png"type="image/png" />
+    <title>健康數據分析 | HealthMonitoringSystem </title>
+    <link rel="icon" href="${pageContext.request.contextPath}/static/icons/LifeGuard.png" type="image/png" />
     <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
-      crossorigin="anonymous"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous" />
     <!-- AdminLTE CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css" />
     <!-- 日期選擇器 Air datepicker Css -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/addRecord.css" />
     <!-- Font Awesome -->
-    <script
-      src="https://kit.fontawesome.com/d6b833583a.js"
-      crossorigin="anonymous"
-    ></script>
-  </head>
+    <script src="https://kit.fontawesome.com/d6b833583a.js" crossorigin="anonymous"></script>
+</head>
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
@@ -140,18 +126,23 @@
         </section>
       </div>
       <!-- Footer -->
-      <footer class="main-footer">
-        <div class="float-right d-none d-sm-inline">版本 1.0</div>
-        <strong>版權所有 &copy; 2024 Ting健康監控系統</strong> 保留所有權利.
-      </footer>
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">版本 1.0</div>
+            <strong>版權所有 &copy; 2024 Ting健康監控系統</strong> 保留所有權利.
+        </footer>
     </div>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- ./wrapper -->
+
+    <!-- 日期選擇器 Air datepicker JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
     document.addEventListener("DOMContentLoaded", function () {
         // 初始化 AdminLTE 的 PushMenu 功能
         if (typeof $ !== 'undefined' && $.fn.PushMenu) {
@@ -254,7 +245,7 @@
                     icon: 'success',
                     title: '登出成功',
                     text: '轉跳中...',
-                    background: '#343a40', // 背景顏色設置為深色
+                    background: '#3d454d', // 背景顏色設置為深色
                     color: '#ffffff', // 文字顏色設置為白色
                     showConfirmButton: false,
                     timer: 1500,
@@ -268,14 +259,5 @@
         });
     }
 	</script>
-    <!-- 日期選擇器 Air datepicker JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js"></script>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
-    <script src="/js/scripts.js"></script>
-  </body>
+</body>
 </html>

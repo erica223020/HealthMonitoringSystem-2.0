@@ -9,5 +9,4 @@ class HealthMonitoringSystem8086ApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

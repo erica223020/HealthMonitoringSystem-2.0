@@ -61,3 +61,4 @@
  * 範例：http://localhost:8082/health/2/updateData?value=80
  * 
  * */
+ * 新聞:https://www.edh.tw/latest/1
