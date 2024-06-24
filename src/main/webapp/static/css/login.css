@@ -159,3 +159,33 @@ html {
     padding: 20px; /* Reduce padding to fit content */
   }
 }
+body {
+    background-image: url('/static/images/background1.jpg'); /* 設置背景圖片的 URL */
+    background-size: cover; /* 讓圖片覆蓋整個背景 */
+    background-position: center; /* 圖片在中心位置 */
+    background-repeat: no-repeat; /* 圖片不重複 */
+    background-attachment: fixed; /* 圖片固定，不隨滾動而移動 */
+    position: relative; /* 設置相對定位，讓伪元素基於此定位 */
+}
+
+body::before {
+    content: ""; /* 這是伪元素需要的內容 */
+    position: absolute; /* 絕對定位 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(26, 26, 46, 0.8); /* 半透明的黑色遮蓋層 */
+    z-index: 1; /* 確保伪元素層在所有內容下方 */
+    pointer-events: none; /* 讓此層不影響任何交互 */
+}
+
+.container {
+    position: relative; /* 確保 container 在伪元素之上顯示 */
+    z-index: 2; /* 設置比伪元素更高的 z-index */
+    background: transparent; /* 背景透明，讓背景圖片透過來 */
+    padding: 0; /* 減少 padding 來與背景融合 */
+}
+.login-section{
+background-color: rgba(33, 34, 41, 0.3); /* 深色背景 */
+}
