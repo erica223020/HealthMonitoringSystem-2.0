@@ -113,7 +113,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>健康數據列表</h1>
+                            <h1>健康數據管理</h1>
                         </div>
                     </div>
                 </div>
@@ -121,6 +121,26 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
+                    <!-- 新增數據表單 -->
+                    <form id="healthDataForm" class="form-custom">
+                        <div class="mb-3">
+                            <label for="dataType" class="form-label">數據類型</label>
+                            <select class="form-select" id="dataType" name="dataType" required>
+                                <option value="體重">體重</option>
+                                <option value="血糖">血糖</option>
+                                <option value="血壓">血壓</option>
+                                <option value="心率">心率</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="value" class="form-label">數值</label>
+                            <input type="text" class="form-control" id="value" name="value" required>
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-primary" onclick="submitHealthData()">提交</button>
+                        </div>
+                    </form>
+
                     <!-- 數據列表 -->
                     <h2 class="mt-5">健康數據列表</h2>
                     <table class="table table-bordered table-custom">
@@ -132,13 +152,14 @@
                                 <th>操作</th>
                             </tr>
                         </thead>
-                        <tbody id="healthDataTable">
-                            <!-- 健康數據將通過JavaScript動態加載 -->
+                        <tbody id="data-table-body">
+                            <!-- 動態加載數據 -->
                         </tbody>
                     </table>
                 </div>
             </section>
         </div>
+
         <!-- Footer -->
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">版本 1.0</div>
@@ -276,7 +297,7 @@
     function submitHealthData() {
         const dataType = document.getElementById('dataType').value;
         const value = document.getElementById('value').value;
-        
+
         const healthData = {
             userId: 1, // 使用一個固定的用戶ID，可以改為動態的
             dataType: dataType,
@@ -293,33 +314,73 @@
         })
         .then(response => response.text())
         .then(result => {
+            Swal.fire({
+                icon: 'success',
+                title: '數據新增成功',
+                text: result,
+                background: '#3d454d',
+                color: '#ffffff'
+            });
             // 刷新數據列表
             loadHealthData();
         })
         .catch(error => {
             console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: '新增數據失敗',
+                text: error,
+                background: '#3d454d',
+                color: '#ffffff'
+            });
         });
     }
 
     // 刪除健康數據的AJAX函數
     function deleteHealthData(id) {
-        if (confirm('確定要刪除這條數據嗎？')) {
-            fetch('/health-data/delete/' + id, {
-                method: 'DELETE'
-            })
-            .then(response => response.text())
-            .then(result => {
-                alert(result);
-                // 刷新數據列表
-                loadHealthData();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
+        Swal.fire({
+            title: '確定要刪除這條數據嗎？',
+            text: "數據刪除後將無法恢復!",
+            icon: 'warning',
+            background: '#3d454d',
+            color: '#ffffff',
+            showCancelButton: true,
+            confirmButtonColor: '#d21f3c',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '確定',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/health-data/delete/' + id, {
+                    method: 'DELETE'
+                })
+                .then(response => response.text())
+                .then(result => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '刪除成功',
+                        text: result,
+                        background: '#3d454d',
+                        color: '#ffffff'
+                    });
+                    // 刷新數據列表
+                    loadHealthData();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '刪除失敗',
+                        text: error,
+                        background: '#3d454d',
+                        color: '#ffffff'
+                    });
+                });
+            }
+        });
     }
 
- // 加載健康數據的函數
+    // 加載健康數據的函數
     function loadHealthData() {
         fetch('/health-data/user/1', { // 使用固定用戶ID來加載數據，可以改為動態的
             method: 'GET',
@@ -329,7 +390,7 @@
         })
         .then(response => response.json())
         .then(data => {
-            const tbody = document.getElementById('healthDataTable');
+            const tbody = document.getElementById('data-table-body');
             tbody.innerHTML = ''; // 清空當前的數據列表
             data.forEach(item => {
                 const row = document.createElement('tr');
@@ -352,11 +413,86 @@
 
     // 修改健康數據的函數（可以用來加載編輯頁面或顯示編輯表單）
     function editHealthData(id) {
-        // 這裡可以添加代碼來加載編輯頁面或顯示編輯表單
-        // 比如：
-        // window.location.href = '/health-data/edit/' + id;
-        // 或者使用AJAX加載數據並顯示在當前頁面上
-        alert('Edit功能尚未實現');
+        fetch('/health-data/user/1', { // 使用固定用戶ID來加載數據，可以改為動態的
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const healthData = data.find(item => item.id == id);
+            if (healthData) {
+                Swal.fire({
+                    title: '修改健康數據',
+                    html: `
+                        <input type="hidden" id="edit-id" value="${healthData.id}">
+                        <div class="mb-3">
+                            <label for="edit-dataType" class="form-label">數據類型</label>
+                            <select class="form-select" id="edit-dataType" required>
+                                <option value="體重" ${healthData.dataType == '體重' ? 'selected' : ''}>體重</option>
+                                <option value="血糖" ${healthData.dataType == '血糖' ? 'selected' : ''}>血糖</option>
+                                <option value="血壓" ${healthData.dataType == '血壓' ? 'selected' : ''}>血壓</option>
+                                <option value="心率" ${healthData.dataType == '心率' ? 'selected' : ''}>心率</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-value" class="form-label">數值</label>
+                            <input type="text" class="form-control" id="edit-value" value="${healthData.value}" required>
+                        </div>
+                    `,
+                    confirmButtonText: '保存',
+                    cancelButtonText: '取消',
+                    preConfirm: () => {
+                        const id = document.getElementById('edit-id').value;
+                        const dataType = document.getElementById('edit-dataType').value;
+                        const value = document.getElementById('edit-value').value;
+
+                        return {
+                            id: id,
+                            dataType: dataType,
+                            value: parseFloat(value)
+                        };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const updatedHealthData = result.value;
+                        fetch('/health-data/update', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(updatedHealthData)
+                        })
+                        .then(response => response.text())
+                        .then(result => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '數據修改成功',
+                                text: result,
+                                background: '#3d454d',
+                                color: '#ffffff'
+                            });
+                            // 刷新數據列表
+                            loadHealthData();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: '修改數據失敗',
+                                text: error,
+                                background: '#3d454d',
+                                color: '#ffffff'
+                            });
+                        });
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 </script>
 </body>

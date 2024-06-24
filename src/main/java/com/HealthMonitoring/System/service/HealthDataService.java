@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class HealthDataService {
 
-	private static final Logger logger = LoggerFactory.getLogger(HealthDataService.class);
+    private static final Logger logger = LoggerFactory.getLogger(HealthDataService.class);
 
     @Autowired
     private HealthDataDao healthDataDao;
