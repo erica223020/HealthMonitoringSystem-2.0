@@ -372,8 +372,184 @@
     });
 }
 
-    // 刪除健康數據的AJAX函數
-    function deleteHealthData(id) {
+    // 加載健康數據的函數
+function loadHealthData() {
+    fetch('/health-data/user/7', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const tbody = document.getElementById('data-table-body');
+        tbody.innerHTML = ''; // 清空當前的數據列表
+        data.forEach(item => {
+            console.log("Processing item ID:", item.id); // 打印每個數據項的ID
+            const chineseType = convertToChinese(item.dataType); // 將英文轉換為中文
+            const date = new Date(item.timestamp);
+            const formattedDate = date.toLocaleString('zh-TW', { 
+                timeZone: 'Asia/Taipei', 
+                hour12: false, 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+
+            const row = document.createElement('tr');
+
+            // 創建每個單元格並設置文本內容
+            const timestampCell = document.createElement('td');
+            timestampCell.textContent = formattedDate;
+            row.appendChild(timestampCell);
+
+            const typeCell = document.createElement('td');
+            typeCell.textContent = chineseType;
+            row.appendChild(typeCell);
+
+            const valueCell = document.createElement('td');
+            valueCell.textContent = item.value;
+            row.appendChild(valueCell);
+
+            const actionsCell = document.createElement('td');
+            // 創建修改按鈕
+            const editButton = document.createElement('button');
+            editButton.type = 'button';
+            editButton.className = 'btn btn-warning btn-sm';
+            editButton.textContent = '修改';
+            editButton.addEventListener('click', () => editHealthData(item.id));
+            actionsCell.appendChild(editButton);
+
+            // 創建刪除按鈕
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.className = 'btn btn-danger btn-sm';
+            deleteButton.textContent = '刪除';
+            deleteButton.addEventListener('click', () => deleteHealthData(item.id));
+            actionsCell.appendChild(deleteButton);
+
+            console.log("Generated delete button with ID:", item.id); // 打印生成的ID
+            row.appendChild(actionsCell);
+
+            tbody.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+//修改健康數據的函數（可以用來加載編輯頁面或顯示編輯表單）
+function editHealthData(id) {
+    console.log("Editing health data with ID:", id); // 打印ID
+    fetch(`/health-data/user/7`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const healthData = data.find(item => item.id == id);
+        console.log("Fetched health data:", healthData); // 打印獲取的健康數據
+        if (healthData) {
+            const chineseType = convertToChinese(healthData.dataType);
+
+            // 創建表單元素
+            const form = document.createElement('div');
+            form.innerHTML = `
+                <div class="mb-3">
+                    <label for="edit-dataType" class="form-label">數據類型</label>
+                    <select class="form-select" id="edit-dataType" required>
+                        <option value="體重" ${chineseType == '體重' ? 'selected' : ''}>體重</option>
+                        <option value="血糖" ${chineseType == '血糖' ? 'selected' : ''}>血糖</option>
+                        <option value="血壓" ${chineseType == '血壓' ? 'selected' : ''}>血壓</option>
+                        <option value="心率" ${chineseType == '心率' ? 'selected' : ''}>心率</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="edit-value" class="form-label">數值</label>
+                    <input type="text" class="form-control" id="edit-value" value="${healthData.value}" required>
+                </div>
+            `;
+
+            Swal.fire({
+                title: '修改健康數據',
+                html: form,
+                confirmButtonText: '保存',
+                cancelButtonText: '取消',
+                showCancelButton: true,
+                preConfirm: () => {
+                    const dataType = form.querySelector('#edit-dataType').value;
+                    const englishType = convertToEnglish(dataType);
+                    const value = form.querySelector('#edit-value').value;
+
+                    return {
+                        id: healthData.id, // 直接使用閉包中的 healthData.id
+                        userId: healthData.userId,
+                        dataType: englishType,
+                        value: parseFloat(value),
+                        timestamp: healthData.timestamp // 添加 timestamp
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const updatedHealthData = result.value;
+                    console.log("Updated health data:", updatedHealthData); // 打印更新的健康數據
+                    fetch('/health-data/update', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedHealthData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => { throw new Error(text) });
+                        }
+                        return response.text();
+                    })
+                    .then(result => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '數據修改成功',
+                            text: result,
+                            background: '#3d454d',
+                            color: '#ffffff'
+                        });
+                        loadHealthData();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: '修改數據失敗',
+                            text: error,
+                            background: '#3d454d',
+                            color: '#ffffff'
+                        });
+                    });
+                }
+            });
+        } else {
+            console.error('Health data not found for ID:', id);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+// 刪除健康數據的AJAX函數
+function deleteHealthData(id) {
+    console.log("Deleting health data with ID:", id); // 打印ID
     Swal.fire({
         title: '確定要刪除這條數據嗎？',
         text: "數據刪除後將無法恢復!",
@@ -414,162 +590,6 @@
         }
     });
 }
-
-
-    // 加載健康數據的函數
-function loadHealthData() {
-    fetch('/health-data/user/7', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Data fetched:", data); // 打印獲取的數據到控制台
-        const tbody = document.getElementById('data-table-body');
-        console.log("Tbody element:", tbody); // 檢查 tbody 元素是否正確獲取
-        tbody.innerHTML = ''; // 清空當前的數據列表
-        data.forEach(item => {
-            console.log("Processing item:", item); // 檢查 item 的具體內容
-            const chineseType = convertToChinese(item.dataType); // 將英文轉換為中文
-            console.log("Chinese Type:", chineseType); // 打印轉換后的數據類型
-            const date = new Date(item.timestamp);
-            const formattedDate = date.toLocaleString('zh-TW', { 
-                timeZone: 'Asia/Taipei', 
-                hour12: false, 
-                year: 'numeric', 
-                month: '2-digit', 
-                day: '2-digit', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit' 
-            });
-            console.log("Formatted Timestamp:", formattedDate); // 打印格式化的時間戳
-            console.log("Value:", item.value); // 打印數值
-
-            const row = document.createElement('tr');
-
-            // 創建每個單元格並設置文本內容
-            const timestampCell = document.createElement('td');
-            timestampCell.textContent = formattedDate;
-            row.appendChild(timestampCell);
-
-            const typeCell = document.createElement('td');
-            typeCell.textContent = chineseType;
-            row.appendChild(typeCell);
-
-            const valueCell = document.createElement('td');
-            valueCell.textContent = item.value;
-            row.appendChild(valueCell);
-
-            const actionsCell = document.createElement('td');
-            actionsCell.innerHTML = `
-            	<button type="button" class="btn btn-warning btn-sm" onclick="editHealthData(${item.id})">修改</button>
-                <button type="button" class="btn btn-danger btn-sm" onclick="deleteHealthData(${item.id})">刪除</button>
-            `;
-            row.appendChild(actionsCell);
-
-            tbody.appendChild(row);
-            console.log("Appending row:", row); // 檢查每個添加的行
-        });
-        console.log("Final HTML of tbody:", tbody.innerHTML); // 打印最終的 tbody 內部 HTML
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-    // 修改健康數據的函數（可以用來加載編輯頁面或顯示編輯表單）
-function editHealthData(id) {
-    fetch('/health-data/user/7', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        const healthData = data.find(item => item.id == id);
-        if (healthData) {
-            const chineseType = convertToChinese(healthData.dataType);
-            Swal.fire({
-                title: '修改健康數據',
-                html: `
-                    <input type="hidden" id="edit-id" value="${healthData.id}">
-                    <div class="mb-3">
-                        <label for="edit-dataType" class="form-label">數據類型</label>
-                        <select class="form-select" id="edit-dataType" required>
-	                            <option value="體重" ${chineseType == '體重' ? 'selected' : ''}>體重</option>
-	                            <option value="血糖" ${chineseType == '血糖' ? 'selected' : ''}>血糖</option>
-	                            <option value="血壓" ${chineseType == '血壓' ? 'selected' : ''}>血壓</option>
-	                            <option value="心率" ${chineseType == '心率' ? 'selected' : ''}>心率</option>
-	                            </select>
-	                        </div>
-	                        <div class="mb-3">
-	                            <label for="edit-value" class="form-label">數值</label>
-	                            <input type="text" class="form-control" id="edit-value" value="${healthData.value}" required>
-	                        </div>
-	                    `,
-	                    confirmButtonText: '保存',
-	                    cancelButtonText: '取消',
-	                    showCancelButton: true,
-	                    preConfirm: () => {
-	                        const id = document.getElementById('edit-id').value;
-	                        const dataType = document.getElementById('edit-dataType').value;
-	                        const englishType = convertToEnglish(dataType);
-	                        const value = document.getElementById('edit-value').value;
-
-	                        return {
-	                            id: id,
-	                            dataType: englishType,
-	                            value: parseFloat(value)
-	                        };
-	                    }
-	                }).then((result) => {
-	                    if (result.isConfirmed) {
-	                        const updatedHealthData = result.value;
-	                        fetch('/health-data/update', {
-	                            method: 'PUT',
-	                            headers: {
-	                                'Content-Type': 'application/json'
-	                            },
-	                            body: JSON.stringify(updatedHealthData)
-	                        })
-	                        .then(response => response.text())
-	                        .then(result => {
-	                            Swal.fire({
-	                                icon: 'success',
-	                                title: '數據修改成功',
-	                                text: result,
-	                                background: '#3d454d',
-	                                color: '#ffffff'
-	                            });
-	                            loadHealthData();
-	                        })
-	                        .catch(error => {
-	                            console.error('Error:', error);
-	                            Swal.fire({
-	                                icon: 'error',
-	                                title: '修改數據失敗',
-	                                text: error,
-	                                background: '#3d454d',
-	                                color: '#ffffff'
-	                            });
-	                        });
-	                    }
-	                });
-	            }
-	        })
-	        .catch(error => {
-	            console.error('Error:', error);
-	        });
-	    }
 </script>
 </body>
 </html>

@@ -79,15 +79,14 @@ public class HealthDataController {
     @PutMapping("/update")
     public ResponseEntity<String> updateHealthData(@RequestBody HealthData healthData) {
         try {
-            logger.info("Updating data: {}", healthData); // 日誌記錄更新的數據
-
+            logger.info("Updating data: {}", healthData);
             healthDataService.updateHealthData(healthData);
             return new ResponseEntity<>("Data updated successfully", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            logger.error("Invalid request: {}", e.getMessage(), e); // 日誌記錄錯誤信息
+            logger.error("Invalid request: {}", e.getMessage(), e);
             return new ResponseEntity<>("Invalid request: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            logger.error("Error updating data: {}", e.getMessage(), e); // 日誌記錄錯誤信息
+            logger.error("Error updating data: {}", e.getMessage(), e);
             return new ResponseEntity<>("Error updating data: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
