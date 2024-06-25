@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface HealthDataDao extends CrudRepository<HealthData, Integer> {
-    
+
     @Query("SELECT * FROM health_data WHERE user_id = :userId")
     List<HealthData> findAllByUserId(Integer userId);
 }

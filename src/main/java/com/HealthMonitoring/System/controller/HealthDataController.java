@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/health-data")
@@ -22,15 +20,6 @@ public class HealthDataController {
     @Autowired
     private HealthDataService healthDataService;
 
-    // 定義一個映射，用於將中文的dataType轉換為英文
-    private static final Map<String, String> dataTypeMap = new HashMap<>();
-    static {
-        dataTypeMap.put("體重", "weight");
-        dataTypeMap.put("血糖", "blood_sugar");
-        dataTypeMap.put("血壓", "blood_pressure");
-        dataTypeMap.put("心率", "heart_rate");
-    }
-
     /**
      * 保存健康數據的控制器方法，支持 application/json
      * @param healthData 要保存的健康數據
@@ -39,14 +28,9 @@ public class HealthDataController {
     @PostMapping("/add")
     public ResponseEntity<String> saveHealthData(@RequestBody HealthData healthData) {
         try {
-            // 將dataType從中文轉換為英文
-            String englishDataType = dataTypeMap.getOrDefault(healthData.getDataType(), healthData.getDataType());
-            healthData.setDataType(englishDataType);
-
             // 設置當前時間戳
             healthData.setTimestamp(new Timestamp(System.currentTimeMillis()));
             logger.info("Received data: {}", healthData); // 日誌記錄接收到的數據
-
             healthDataService.saveHealthData(healthData);
             return new ResponseEntity<>("Data saved successfully", HttpStatus.OK);
         } catch (Exception e) {
@@ -95,10 +79,6 @@ public class HealthDataController {
     @PutMapping("/update")
     public ResponseEntity<String> updateHealthData(@RequestBody HealthData healthData) {
         try {
-            // 將dataType從中文轉換為英文
-            String englishDataType = dataTypeMap.getOrDefault(healthData.getDataType(), healthData.getDataType());
-            healthData.setDataType(englishDataType);
-
             logger.info("Updating data: {}", healthData); // 日誌記錄更新的數據
 
             healthDataService.updateHealthData(healthData);
