@@ -4,6 +4,9 @@ import com.HealthMonitoring.System.dao.UserDao;
 import com.HealthMonitoring.System.model.po.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -93,6 +96,17 @@ public class UserService {
             return rowsAffected > 0;
         } catch (Exception e) {
             return false;
+        }
+    }
+    
+ // 獲取當前登錄用戶的信息
+    public UserDetails getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            return (UserDetails) principal;
+        } else {
+            throw new ClassCastException("Principal is not an instance of UserDetails");
         }
     }
 }

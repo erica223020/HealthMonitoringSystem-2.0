@@ -175,7 +175,8 @@
     <!-- AdminLTE App -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>   
+        <script>
+        
         document.addEventListener("DOMContentLoaded", function () {
             // 初始化數據加載
               console.log("Document loaded");
@@ -326,13 +327,35 @@
                 return dataType;
         }
     }
-    
+    let userId;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/user/current')
+            .then(response => response.json())
+            .then(data => {
+                userId = data.id;
+                console.log("Current user ID:", userId);
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
+    });
  // 提交健康數據的AJAX函數
     function submitHealthData() {
     const dataType = document.getElementById('dataType').value;
     const value = document.getElementById('value').value;
     const englishType = convertToEnglish(dataType);
 
+    if (parseFloat(value) <= 0) {
+        Swal.fire({
+            icon: 'error',
+            title: '無效的數值',
+            text: '數值不能為 0 或負數',
+            background: '#3d454d',
+            color: '#ffffff'
+        });
+        return; // 阻止提交
+    }
     const healthData = {
         userId: 7,
         dataType: englishType,
@@ -352,7 +375,7 @@
         Swal.fire({
             icon: 'success',
             title: '數據新增成功',
-            text: result,
+            text: '成功新增了數據',
             background: '#3d454d',
             color: '#ffffff'
         });
@@ -363,7 +386,7 @@
         Swal.fire({
             icon: 'error',
             title: '新增數據失敗',
-            text: error,
+            text: '請稍後再試',
             background: '#3d454d',
             color: '#ffffff'
         });
@@ -385,6 +408,8 @@ function loadHealthData() {
         return response.json();
     })
     .then(data => {
+    	// 按時間排序，從新到舊
+        data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         const tbody = document.getElementById('data-table-body');
         tbody.innerHTML = ''; // 清空當前的數據列表
         data.forEach(item => {
@@ -485,10 +510,23 @@ function editHealthData(id) {
                 confirmButtonText: '保存',
                 cancelButtonText: '取消',
                 showCancelButton: true,
+                background: '#3d454d',
+                color: '#ffffff',
                 preConfirm: () => {
                     const dataType = form.querySelector('#edit-dataType').value;
                     const englishType = convertToEnglish(dataType);
                     const value = form.querySelector('#edit-value').value;
+					
+                    if (parseFloat(value) <= 0) {
+                    	Swal.fire({
+                            icon: 'error',
+                            title: '無效的數值',
+                            text: '數值不能為 0 或負數',
+                            background: '#3d454d',
+                            color: '#ffffff'
+                        });
+                        return; // 阻止提交
+                    }
 
                     return {
                         id: healthData.id, // 直接使用閉包中的 healthData.id
@@ -519,7 +557,7 @@ function editHealthData(id) {
                         Swal.fire({
                             icon: 'success',
                             title: '數據修改成功',
-                            text: result,
+                            text: '成功更新了數據',
                             background: '#3d454d',
                             color: '#ffffff'
                         });
@@ -530,7 +568,7 @@ function editHealthData(id) {
                         Swal.fire({
                             icon: 'error',
                             title: '修改數據失敗',
-                            text: error,
+                            text: '數值不能為 0 或負數',
                             background: '#3d454d',
                             color: '#ffffff'
                         });
@@ -569,7 +607,7 @@ function deleteHealthData(id) {
                 Swal.fire({
                     icon: 'success',
                     title: '刪除成功',
-                    text: result,
+                    text: '數據刪除成功',
                     background: '#3d454d',
                     color: '#ffffff'
                 });
@@ -580,7 +618,7 @@ function deleteHealthData(id) {
                 Swal.fire({
                     icon: 'error',
                     title: '刪除失敗',
-                    text: error,
+                    text: '數據刪除失敗',
                     background: '#3d454d',
                     color: '#ffffff'
                 });
