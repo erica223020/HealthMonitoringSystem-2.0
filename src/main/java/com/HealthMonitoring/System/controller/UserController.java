@@ -1,5 +1,6 @@
 package com.HealthMonitoring.System.controller;
 
+import com.HealthMonitoring.System.model.po.User;
 import com.HealthMonitoring.System.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +35,21 @@ public class UserController {
     	 logger.debug("Accessing index page");
         return "index"; // 返回 index.jsp
     }
+    
+//    @GetMapping("/")
+//    public String home() {
+//        return "redirect:/index"; // 重新導向到首頁處理邏輯
+//    }
+//
+//    @GetMapping("/index")
+//    public String index() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+//            return "redirect:/login"; // 未認證使用者重新導向到登入頁面
+//        }
+//        return "redirect:/index"; // 已認證使用者返回首頁
+//    }
+    
     @GetMapping("/addRecord")
     public String showAddRecordPage() {
     	logger.debug("Accessing addRecord page");
@@ -117,7 +132,7 @@ public class UserController {
     
     @GetMapping("/user/current")
     @ResponseBody
-    public UserDetails getCurrentUser() {
-        return userService.getCurrentUser();
+    public User getCurrentUser() {
+        return userService.getCurrentUserDetails();
     }
 }

@@ -44,4 +44,8 @@ public class UserDao {
                                    user.getStatus(), 
                                    user.getCreatedAt());
     }
+    public int delete(User user) {
+        String sql = "DELETE FROM users WHERE email = ?";
+        return jdbcTemplate.update(sql, user.getEmail());
+    }
 }

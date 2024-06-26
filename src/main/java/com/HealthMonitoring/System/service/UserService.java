@@ -77,6 +77,7 @@ public class UserService {
         if (userDao.findByEmail(email) != null) {
             return false; // Email 已經被註冊
         }
+        
 
         // 加密密碼
         String encodedPassword = passwordEncoder.encode(password);
@@ -100,13 +101,13 @@ public class UserService {
     }
     
  // 獲取當前登錄用戶的信息
-    public UserDetails getCurrentUser() {
+    public User getCurrentUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return (UserDetails) principal;
-        } else {
-            throw new ClassCastException("Principal is not an instance of UserDetails");
+        if (authentication != null && authentication.isAuthenticated() && !(authentication.getPrincipal() instanceof String)) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userDao.findByEmail(userDetails.getUsername());
         }
+        return null;
     }
-}
+    }
+
