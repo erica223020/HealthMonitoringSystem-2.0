@@ -1,5 +1,6 @@
 package com.HealthMonitoring.System.controller;
 
+import com.HealthMonitoring.System.model.po.User;
 import com.HealthMonitoring.System.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -115,9 +116,17 @@ public class UserController {
         return "redirect:/login";
     }
     
-    @GetMapping("/user/current")
+    // 新增的方法來根據 email 獲取用戶資料
+    @GetMapping("/user/getUserByEmail")
     @ResponseBody
-    public UserDetails getCurrentUser() {
-        return userService.getCurrentUser();
+    public User getUserByEmail(@RequestParam("email") String email) {
+        logger.info("Fetching user details for email: {}", email);
+        User user = userService.findUserByEmail(email);
+        if (user != null) {
+            logger.info("User details - ID: {}, Username: {}", user.getUserId(), user.getUsername());
+        } else {
+            logger.info("No user found with email: {}", email);
+        }
+        return user;
     }
-}
+    }

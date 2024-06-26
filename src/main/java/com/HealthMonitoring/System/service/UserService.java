@@ -1,6 +1,7 @@
 package com.HealthMonitoring.System.service;
 
 import com.HealthMonitoring.System.dao.UserDao;
+import com.HealthMonitoring.System.security.UserPrincipal;
 import com.HealthMonitoring.System.model.po.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -100,13 +101,15 @@ public class UserService {
     }
     
  // 獲取當前登錄用戶的信息
-    public UserDetails getCurrentUser() {
+    public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
-            return (UserDetails) principal;
-        } else {
-            throw new ClassCastException("Principal is not an instance of UserDetails");
+        if (authentication != null && authentication.getPrincipal() instanceof UserPrincipal) {
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            return new User(userPrincipal.getUserId(), userPrincipal.getEmail(), userPrincipal.getPassword(), userPrincipal.getUsername(), "active", null, null);
         }
+        throw new IllegalStateException("No authenticated user found or user is not an instance of UserPrincipal");
+    }
+    public User findUserByEmail(String email) {
+        return userDao.findByEmail(email);
     }
 }

@@ -1,12 +1,14 @@
 package com.HealthMonitoring.System.config;
 
+import com.HealthMonitoring.System.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
- 
+
 @Configuration
 public class SecurityConfig {
 
@@ -17,7 +19,7 @@ public class SecurityConfig {
                 .anyRequest().permitAll() // 允許所有請求
             )
             .formLogin(formLogin -> formLogin
-            	.usernameParameter("email")                  // 使用信箱作為用戶名
+                .usernameParameter("email")                  // 使用信箱作為用戶名
                 .loginPage("/login")                      // 1. 設置自定義的登錄頁面 URL。
                 .loginProcessingUrl("/user/userLogin")        // 2. 指定處理登錄請求的 URL。
                 .defaultSuccessUrl("/index", true)             // 3. 指定登錄成功後的重定向 URL。
@@ -37,5 +39,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService();
     }
 }
