@@ -176,7 +176,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-        
+        let userId;
         document.addEventListener("DOMContentLoaded", function () {
             // 初始化數據加載
               console.log("Document loaded");
@@ -327,19 +327,31 @@
                 return dataType;
         }
     }
-    let userId;
 
     document.addEventListener("DOMContentLoaded", function () {
         fetch('/user/current')
-            .then(response => response.json())
+            .then(response => {
+                console.log("Fetching current user data...");
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
-                userId = data.id;
-                console.log("Current user ID:", userId);
+                console.log("Returned data:", data); // 打印完整返回数据
+                if (data.userId) {
+                    userId = data.userId; // 使用返回数据中的 userId 字段
+                    console.log("Current user ID:", userId);
+                    loadHealthData(); // 确保用户ID加载完成后再加载健康数据
+                } else {
+                    console.error('No current user data received');
+                }
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
             });
     });
+    
  // 提交健康數據的AJAX函數
     function submitHealthData() {
     const dataType = document.getElementById('dataType').value;
@@ -366,11 +378,12 @@
         return; // 阻止提交
     }
     const healthData = {
-        userId: 7,
+    	userId: userId,
         dataType: englishType,
         value: parseFloat(value),
         timestamp: new Date().toISOString()
     };
+    console.log("Submitting health data:", healthData); // 打印即将提交的健康数据
 
     fetch('/health-data/add', {
         method: 'POST',
@@ -404,19 +417,24 @@
 
     // 加載健康數據的函數
 function loadHealthData() {
-    fetch('/health-data/user/7', {
+    const url = `/health-data/user/${userId}`;
+    console.log("Fetching health data from URL:", url); // 打印请求的URL
+    fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     })
     .then(response => {
+    	console.log("Fetching health data response:", response); // 打印响应
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
+    	console.log("Fetched health data:", data); // 打印获取到的健康数据
+    	
     	// 按時間排序，從新到舊
         data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         const tbody = document.getElementById('data-table-body');
@@ -482,7 +500,7 @@ function loadHealthData() {
 //修改健康數據的函數（可以用來加載編輯頁面或顯示編輯表單）
 function editHealthData(id) {
     console.log("Editing health data with ID:", id); // 打印ID
-    fetch(`/health-data/user/7`, {
+    fetch(`/health-data/user/${userId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
