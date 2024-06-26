@@ -345,7 +345,16 @@
     const dataType = document.getElementById('dataType').value;
     const value = document.getElementById('value').value;
     const englishType = convertToEnglish(dataType);
-
+    if (isNaN(value) || parseFloat(value) <= 0) {
+        Swal.fire({
+            icon: 'error',
+            title: '無效的數值',
+            text: '數值必須是數字且不得小於1',
+            background: '#3d454d',
+            color: '#ffffff'
+        });
+        return; // 阻止提交
+    }
     if (parseFloat(value) <= 0) {
         Swal.fire({
             icon: 'error',
@@ -517,16 +526,18 @@ function editHealthData(id) {
                     const englishType = convertToEnglish(dataType);
                     const value = form.querySelector('#edit-value').value;
 					
-                    if (parseFloat(value) <= 0) {
-                    	Swal.fire({
+                    if (isNaN(value) || parseFloat(value) <= 0) {
+                        Swal.fire({
                             icon: 'error',
                             title: '無效的數值',
-                            text: '數值不能為 0 或負數',
+                            text: '數值必須是數字且不得小於1',
                             background: '#3d454d',
                             color: '#ffffff'
                         });
                         return; // 阻止提交
                     }
+
+
 
                     return {
                         id: healthData.id, // 直接使用閉包中的 healthData.id
