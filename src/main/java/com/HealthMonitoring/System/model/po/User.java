@@ -12,7 +12,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @Builder
 public class User {
-    private Integer userId;       // 所屬用戶的唯一標識符
+    private Integer id;         // 用戶的唯一標識符
     private String email;       // 用戶的電子郵件地址
     private String password;    // 用戶的密碼
     private String username;    // 用戶名

@@ -8,7 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.ResponseBody;
+=======
+>>>>>>> parent of 486070e (修正)
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,9 +133,12 @@ public class UserController {
         return "redirect:/login";
     }
     
+<<<<<<< HEAD
     @GetMapping("/user/current")
     @ResponseBody
     public User getCurrentUser() {
         return userService.getCurrentUserDetails();
     }
+=======
+>>>>>>> parent of 486070e (修正)
 }

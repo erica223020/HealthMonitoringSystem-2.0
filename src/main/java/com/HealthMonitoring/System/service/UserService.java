@@ -4,9 +4,6 @@ import com.HealthMonitoring.System.dao.UserDao;
 import com.HealthMonitoring.System.model.po.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -99,6 +96,7 @@ public class UserService {
             return false;
         }
     }
+<<<<<<< HEAD
     
  // 獲取當前登錄用戶的信息
     public User getCurrentUserDetails() {
@@ -111,3 +109,6 @@ public class UserService {
     }
     }
 
+=======
+}
+>>>>>>> parent of 486070e (修正)

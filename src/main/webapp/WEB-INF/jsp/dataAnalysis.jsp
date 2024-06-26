@@ -118,26 +118,12 @@
             </div>
           </div>
         </section>
-<!-- Main content -->
-<section class="content">
-    <div class="container-fluid">
-        <!-- 日期選擇器 -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="startDate" class="form-label">開始日期</label>
-                <input type="text" class="form-control" id="startDate" name="startDate" required>
-            </div>
-            <div class="col-md-6">
-                <label for="endDate" class="form-label">結束日期</label>
-                <input type="text" class="form-control" id="endDate" name="endDate" required>
-            </div>
-        </div>
-        <div class="text-end mb-3">
-            <button type="button" class="btn btn-primary" onclick="loadHealthChart()">顯示圖表</button>
-        </div>
-        <canvas id="healthChart"></canvas>
-    </div>
-</section>
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <canvas id="healthChart"></canvas>
+          </div>
+        </section>
       </div>
       <!-- Footer -->
         <footer class="main-footer">
@@ -157,42 +143,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // 初始化 AdminLTE 的 PushMenu 功能
-            if (typeof $ !== 'undefined' && $.fn.PushMenu) {
-                $('[data-widget="pushmenu"]').PushMenu();
-            }
+    document.addEventListener("DOMContentLoaded", function () {
+        // 初始化 AdminLTE 的 PushMenu 功能
+        if (typeof $ !== 'undefined' && $.fn.PushMenu) {
+            $('[data-widget="pushmenu"]').PushMenu();
+        }
 
-            // 初始化日期選擇器
-            const startDatePicker = new AirDatepicker('#startDate', {
-                locale: {
-                    days: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-                    daysShort: ['日', '一', '二', '三', '四', '五', '六'],
-                    daysMin: ['日', '一', '二', '三', '四', '五', '六'],
-                    months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                    monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-                    today: '今天',
-                    clear: '清除',
-                    dateFormat: 'yyyy-MM-dd',
-                    timeFormat: 'HH:mm',
-                    firstDay: 1
-                }
-            });
-
-            const endDatePicker = new AirDatepicker('#endDate', {
-                locale: {
-                    days: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-                    daysShort: ['日', '一', '二', '三', '四', '五', '六'],
-                    daysMin: ['日', '一', '二', '三', '四', '五', '六'],
-                    months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                    monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-                    today: '今天',
-                    clear: '清除',
-                    dateFormat: 'yyyy-MM-dd',
-                    timeFormat: 'HH:mm',
-                    firstDay: 1
-                }
-            });
         // 處理通知項目，初始化時檢查已讀狀態
         const notificationItems = document.querySelectorAll(".notification-item");
         notificationItems.forEach((item) => {
