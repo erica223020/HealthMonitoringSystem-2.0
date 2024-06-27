@@ -126,7 +126,7 @@
                             <select class="form-select" id="dataType" name="dataType" required>
                                 <option value="體重">體重</option>
                                 <option value="血糖">血糖</option>
-                                <option value="血壓">血壓</option>
+                                <option value="脈壓">脈壓</option>
                                 <option value="心率">心率</option>
                             </select>
                         </div>
@@ -177,11 +177,209 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
         let userId;
+     // 文档加载完成后的初始化逻辑
         document.addEventListener("DOMContentLoaded", function () {
-            // 初始化數據加載
-              console.log("Document loaded");
-    			console.log(document.getElementById('data-table-body')); // 應顯示該元素或null
-            loadHealthData();
+            console.log("Document loaded");
+
+            // 获取当前登录用户的ID
+            fetch('/user/current')
+                .then(response => {
+                    console.log("Fetching current user data...");
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Returned data:", data); // 打印完整返回数据以确保数据格式正确
+                    if (data && data.userId) {
+                        userId = data.userId;
+                        console.log("Current user ID:", userId);
+                        loadHealthData(userId); // 使用閉包確保用戶ID在載入健康資料時正確使用
+                     	
+                        // 提交健康数据的AJAX函數
+                       window.submitHealthData = function () {
+                        const dataType = document.getElementById('dataType').value;
+                        const value = document.getElementById('value').value;
+                        const englishType = convertToEnglish(dataType);
+                        if (isNaN(value) || parseFloat(value) <= 0) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '無效的數值',
+                                text: '數值必須是數字且不得小於1',
+                                background: '#3d454d',
+                                color: '#ffffff'
+                            });
+                            return; // 阻止提交
+                        }
+                        if (parseFloat(value) <= 0) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '無效的數值',
+                                text: '數值不能為 0 或負數',
+                                background: '#3d454d',
+                                color: '#ffffff'
+                            });
+                            return; // 阻止提交
+                        }
+                        const healthData = {
+                        	userId: userId,
+                            dataType: englishType,
+                            value: parseFloat(value),
+                            timestamp: new Date().toISOString()
+                        };
+
+                        fetch('/health-data/add', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(healthData)
+                        })
+                        .then(response => response.text())
+                        .then(result => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '數據新增成功',
+                                text: '成功新增了數據',
+                                background: '#3d454d',
+                                color: '#ffffff'
+                            });
+                            loadHealthData(userId);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: '新增數據失敗',
+                                text: '請稍後再試',
+                                background: '#3d454d',
+                                color: '#ffffff'
+                            });
+                        });
+                    }
+                        
+                      
+                        // 修改健康數據函數
+                        window.editHealthData = function (id) {
+                            console.log("Editing health data with ID:", id); // 打印ID
+                            fetch('/health-data/user/' + userId, {
+                                method: 'GET',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                const healthData = data.find(item => item.id == id);
+                                console.log("Fetched health data:", healthData); // 打印獲取的健康數據
+                                if (healthData) {
+                                    const chineseType = convertToChinese(healthData.dataType);
+
+                                    // 創建表單元素
+                                    const form = document.createElement('div');
+                                    form.innerHTML = `
+                                        <div class="mb-3">
+                                            <label for="edit-dataType" class="form-label">數據類型</label>
+                                            <select class="form-select" id="edit-dataType" required>
+                                                <option value="體重" ${chineseType == '體重' ? 'selected' : ''}>體重</option>
+                                                <option value="血糖" ${chineseType == '血糖' ? 'selected' : ''}>血糖</option>
+                                                <option value="脈壓" ${chineseType == '脈壓' ? 'selected' : ''}>脈壓</option>
+                                                <option value="心率" ${chineseType == '心率' ? 'selected' : ''}>心率</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="edit-value" class="form-label">數值</label>
+                                            <input type="text" class="form-control" id="edit-value" value="${healthData.value}" required>
+                                        </div>
+                                    `;
+
+                                    Swal.fire({
+                                        title: '修改健康數據',
+                                        html: form,
+                                        confirmButtonText: '保存',
+                                        cancelButtonText: '取消',
+                                        showCancelButton: true,
+                                        background: '#3d454d',
+                                        color: '#ffffff',
+                                        preConfirm: () => {
+                                            const dataType = form.querySelector('#edit-dataType').value;
+                                            const englishType = convertToEnglish(dataType);
+                                            const value = form.querySelector('#edit-value').value;
+
+                                            if (isNaN(value) || parseFloat(value) <= 0) {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: '無效的數值',
+                                                    text: '數值必須是數字且不得小於1',
+                                                    background: '#3d454d',
+                                                    color: '#ffffff'
+                                                });
+                                                return; // 阻止提交
+                                            }
+
+                                            return {
+                                                id: healthData.id, // 直接使用閉包中的 healthData.id
+                                                userId: healthData.userId,
+                                                dataType: englishType,
+                                                value: parseFloat(value),
+                                                timestamp: healthData.timestamp // 添加 timestamp
+                                            };
+                                        }
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            const updatedHealthData = result.value;
+                                            console.log("Updated health data:", updatedHealthData); // 打印更新的健康數據
+                                            fetch('/health-data/update', {
+                                                method: 'PUT',
+                                                headers: {
+                                                    'Content-Type': 'application/json'
+                                                },
+                                                body: JSON.stringify(updatedHealthData)
+                                            })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    return response.text().then(text => { throw new Error(text) });
+                                                }
+                                                return response.text();
+                                            })
+                                            .then(result => {
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: '數據修改成功',
+                                                    text: '成功更新了數據',
+                                                    background: '#3d454d',
+                                                    color: '#ffffff'
+                                                });
+                                                loadHealthData(userId);
+                                            })
+                                            .catch(error => {
+                                                console.error('Error:', error);
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: '修改數據失敗',
+                                                    text: '請稍後再試',
+                                                    background: '#3d454d',
+                                                    color: '#ffffff'
+                                                });
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    console.error('Health data not found for ID:', id);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                        };
+                    } else {
+                        console.error('No current user data received');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                });
 
             // 初始化 AdminLTE 的 PushMenu 功能
             if (typeof $ !== 'undefined' && $.fn.PushMenu) {
@@ -266,6 +464,7 @@
             checkNewNotifications(); // 初始化檢查通知
         }
     });
+     
     function handleLogout() {
         Swal.fire({
             title: '確認登出?',
@@ -298,13 +497,15 @@
             }
         });
     }
+    
+    //數據轉換英文
     function convertToEnglish(dataType) {
         switch (dataType) {
             case "體重":
                 return "weight";
             case "血糖":
                 return "blood_sugar";
-            case "血壓":
+            case "脈壓":
                 return "blood_pressure";
             case "心率":
                 return "heart_rate";
@@ -312,7 +513,8 @@
                 return dataType;
         }
     }
-
+	
+    //數據轉換中文
     function convertToChinese(dataType) {
         switch (dataType) {
             case "weight":
@@ -320,7 +522,7 @@
             case "blood_sugar":
                 return "血糖";
             case "blood_pressure":
-                return "血壓";
+                return "脈壓";
             case "heart_rate":
                 return "心率";
             default:
@@ -328,30 +530,6 @@
         }
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        fetch('/user/current')
-            .then(response => {
-                console.log("Fetching current user data...");
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("Returned data:", data); // 打印完整返回数据
-                if (data.userId) {
-                    userId = data.userId; // 使用返回数据中的 userId 字段
-                    console.log("Current user ID:", userId);
-                    loadHealthData(); // 确保用户ID加载完成后再加载健康数据
-                } else {
-                    console.error('No current user data received');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching user data:', error);
-            });
-    });
-    
  // 提交健康數據的AJAX函數
     function submitHealthData() {
     const dataType = document.getElementById('dataType').value;
@@ -383,7 +561,6 @@
         value: parseFloat(value),
         timestamp: new Date().toISOString()
     };
-    console.log("Submitting health data:", healthData); // 打印即将提交的健康数据
 
     fetch('/health-data/add', {
         method: 'POST',
@@ -401,7 +578,7 @@
             background: '#3d454d',
             color: '#ffffff'
         });
-        loadHealthData();
+        loadHealthData(userId);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -416,9 +593,13 @@
 }
 
     // 加載健康數據的函數
-function loadHealthData() {
-    const url = `/health-data/user/${userId}`;
-    console.log("Fetching health data from URL:", url); // 打印请求的URL
+function loadHealthData(userId) {
+    if (!userId) {
+        console.error("User ID is not set.");
+        return;
+    }
+    const url = '/health-data/user/' + userId;
+    console.log("Fetching health data from URL:", url); // 打印生成的URL
     fetch(url, {
         method: 'GET',
         headers: {
@@ -426,16 +607,14 @@ function loadHealthData() {
         }
     })
     .then(response => {
-    	console.log("Fetching health data response:", response); // 打印响应
+        console.log("Fetching health data response:", response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         return response.json();
     })
     .then(data => {
-    	console.log("Fetched health data:", data); // 打印获取到的健康数据
-    	
-    	// 按時間排序，從新到舊
+        // 按時間排序，從新到舊
         data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         const tbody = document.getElementById('data-table-body');
         tbody.innerHTML = ''; // 清空當前的數據列表
@@ -469,6 +648,42 @@ function loadHealthData() {
             valueCell.textContent = item.value;
             row.appendChild(valueCell);
 
+            // 判斷數據值並改變整行顏色
+            if (item.dataType === 'weight') {
+                const weightValue = parseFloat(item.value);
+                console.log("Weight value:", weightValue); // 打印體重值
+                if (weightValue > 70 * 1.2) {
+                    row.classList.add('table-danger');
+                } else if (weightValue > 70 * 1.1) {
+                    row.classList.add('table-warning');
+                }
+            } else if (item.dataType === 'blood_sugar') {
+                const bloodSugarValue = parseFloat(item.value);
+                console.log("Blood sugar value:", bloodSugarValue); // 打印血糖值
+                if (bloodSugarValue > 126) {
+                    row.classList.add('table-danger');
+                } else if (bloodSugarValue > 100) {
+                    row.classList.add('table-warning');
+                }
+            } else if (item.dataType === 'blood_pressure') {
+            	const pulsePressure = parseFloat(item.value);
+                console.log("Blood sugar value:", pulsePressure); // 打印脈壓
+                
+                if (pulsePressure > 60) {
+                    row.classList.add('table-danger');
+                } else if (pulsePressure > 50) {
+                    row.classList.add('table-warning');
+                }
+            } else if (item.dataType === 'heart_rate') {
+                const heartRateValue = parseFloat(item.value);
+                console.log("Heart rate value:", heartRateValue); // 打印心率值
+                if (heartRateValue > 120) {
+                    row.classList.add('table-danger');
+                } else if (heartRateValue > 100) {
+                    row.classList.add('table-warning');
+                }
+            }
+
             const actionsCell = document.createElement('td');
             // 創建修改按鈕
             const editButton = document.createElement('button');
@@ -486,7 +701,6 @@ function loadHealthData() {
             deleteButton.addEventListener('click', () => deleteHealthData(item.id));
             actionsCell.appendChild(deleteButton);
 
-            console.log("Generated delete button with ID:", item.id); // 打印生成的ID
             row.appendChild(actionsCell);
 
             tbody.appendChild(row);
@@ -500,7 +714,8 @@ function loadHealthData() {
 //修改健康數據的函數（可以用來加載編輯頁面或顯示編輯表單）
 function editHealthData(id) {
     console.log("Editing health data with ID:", id); // 打印ID
-    fetch(`/health-data/user/${userId}`, {
+    console.log("Editing health data with userID:", userId); // 打印ID
+    fetch('/health-data/user/'+userId,{
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -521,7 +736,7 @@ function editHealthData(id) {
                     <select class="form-select" id="edit-dataType" required>
                         <option value="體重" ${chineseType == '體重' ? 'selected' : ''}>體重</option>
                         <option value="血糖" ${chineseType == '血糖' ? 'selected' : ''}>血糖</option>
-                        <option value="血壓" ${chineseType == '血壓' ? 'selected' : ''}>血壓</option>
+                        <option value="脈壓" ${chineseType == '脈壓' ? 'selected' : ''}>脈壓</option>
                         <option value="心率" ${chineseType == '心率' ? 'selected' : ''}>心率</option>
                     </select>
                 </div>
@@ -554,8 +769,6 @@ function editHealthData(id) {
                         });
                         return; // 阻止提交
                     }
-
-
 
                     return {
                         id: healthData.id, // 直接使用閉包中的 healthData.id
@@ -640,7 +853,7 @@ function deleteHealthData(id) {
                     background: '#3d454d',
                     color: '#ffffff'
                 });
-                loadHealthData();
+                loadHealthData(userId);
             })
             .catch(error => {
                 console.error('Error:', error);

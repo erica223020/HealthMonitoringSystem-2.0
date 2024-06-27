@@ -129,7 +129,7 @@
                                 <span class="info-box-icon bg-info elevation-1"><i class="fas fa-weight"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">體重</span>
-                                    <span class="info-box-number">${latestWeight} kg</span>
+                                    <span id="latestWeight" class="info-box-number">N/A</span>
                                 </div>
                             </div>
                         </div>
@@ -138,7 +138,7 @@
                                 <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-tint"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">血糖</span>
-                                    <span class="info-box-number">${latestBloodSugar} mg/dL</span>
+                                    <span id="latestBloodSugar" class="info-box-number">N/A</span>
                                 </div>
                             </div>
                         </div>
@@ -146,8 +146,8 @@
                             <div class="info-box mb-3">
                                 <span class="info-box-icon bg-success elevation-1"><i class="fas fa-heartbeat"></i></span>
                                 <div class="info-box-content">
-                                    <span class="info-box-text">血壓</span>
-                                    <span class="info-box-number">${latestBloodPressure} mmHg</span>
+                                    <span class="info-box-text">脈壓</span>
+                                    <span id="latestBloodPressure" class="info-box-number">N/A</span>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +156,7 @@
                                 <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-heart"></i></span>
                                 <div class="info-box-content">
                                     <span class="info-box-text">心率</span>
-                                    <span class="info-box-number">${latestHeartRate} bpm</span>
+                                    <span id="latestHeartRate" class="info-box-number">N/A</span>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                                             您於 2024/06/16 測量了心率：75 bpm。
                                         </li>
                                         <li class="list-group-item">
-                                            系統提醒：記得明天測量血壓。
+                                            系統提醒：記得明天測量脈壓。
                                         </li>
                                         <li class="list-group-item">
                                             您於 2024/06/15 更新了血糖紀錄。
@@ -393,6 +393,66 @@
                 });
             }
         });
+    }
+    
+    $(document).ready(function() {
+        console.log("Document ready, sending AJAX request to /health-data/user/{userId}");
+
+        // 獲取當前用戶的 ID
+        var userId = 2; // 替換為你實際的用戶 ID 獲取方式
+
+        // 確保 /health-data/user/{userId} API 被加載
+        $.ajax({
+            url: 'http://localhost:8086/health-data/user/' + userId,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            success: function(response) {
+                console.log("AJAX request successful, processing response");
+
+                var latestData = {};
+
+                response.forEach(function(item) {
+                    var dataType = convertToChinese(item.dataType);
+                    var value = item.value;
+                    var timestamp = new Date(item.timestamp);
+
+                    if (!latestData[dataType] || timestamp > new Date(latestData[dataType].timestamp)) {
+                        latestData[dataType] = {
+                            value: value,
+                            timestamp: timestamp
+                        };
+                    }
+                });
+
+                console.log("Latest data:", latestData);
+
+                // 更新頁面顯示
+                $('#latestWeight').text(latestData['體重'] ? latestData['體重'].value + ' kg' : 'N/A');
+                $('#latestBloodSugar').text(latestData['血糖'] ? latestData['血糖'].value + ' mg/dL' : 'N/A');
+                $('#latestBloodPressure').text(latestData['脈壓'] ? latestData['脈壓'].value + ' mmHg' : 'N/A');
+                $('#latestHeartRate').text(latestData['心率'] ? latestData['心率'].value + ' bpm' : 'N/A');
+            },
+            error: function(error) {
+                console.error('Error fetching health data:', error);
+            }
+        });
+    });
+
+    function convertToChinese(dataType) {
+        switch (dataType) {
+            case "weight":
+                return "體重";
+            case "blood_sugar":
+                return "血糖";
+            case "blood_pressure":
+                return "脈壓";
+            case "heart_rate":
+                return "心率";
+            default:
+                return dataType;
+        }
     }
 	</script>
 </body>

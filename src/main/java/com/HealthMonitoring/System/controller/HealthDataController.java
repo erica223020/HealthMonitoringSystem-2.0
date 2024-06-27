@@ -45,14 +45,9 @@ public class HealthDataController {
      * @return 該用戶的所有健康數據
      */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<HealthData>> getAllHealthDataByUserId(@PathVariable int userId) {
-        try {
-            List<HealthData> healthDataList = healthDataService.findAllByUserId(userId);
-            return new ResponseEntity<>(healthDataList, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("Error fetching data: {}", e.getMessage(), e); // 日誌記錄錯誤信息
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<List<HealthData>> getHealthDataByUserId(@PathVariable int userId) {
+        List<HealthData> healthDataList = healthDataService.findAllByUserId(userId);
+        return ResponseEntity.ok(healthDataList);
     }
 
     /**
@@ -90,4 +85,6 @@ public class HealthDataController {
             return new ResponseEntity<>("Error updating data: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    
 }
