@@ -14,6 +14,35 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/addRecord.css" />
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/d6b833583a.js" crossorigin="anonymous"></script>
+    <style>
+    .btn-sm{
+    margin: 0px 10px;
+}
+
+.content-wrapper {
+  background-color: #fcfaf7 !important;
+}
+
+.userpanel{
+	text-decoration-color: rgba(255, 128, 128, 0.5)!important;
+}
+.main-sidebar{
+	background-color: #403734 !important;
+}
+
+.nav-item p,.nav-icon{
+	color:#fff;
+}
+
+.active{
+	background-color: #a6452b !important; /* 橙色 */
+    color: #3d322f !important; /* 深棕色文字 */
+	
+}
+.navbar{
+	background-color: #f5f4f0 !important;
+}
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -141,7 +170,7 @@
 
                     <!-- 數據列表 -->
                     <h2 class="mt-5">健康數據列表</h2>
-                    <table class="table table-bordered table-custom">
+                    <table class="table table-bordered table-custom table-hover">
                         <thead>
                             <tr>
                                 <th>日期</th>
@@ -207,7 +236,7 @@
                                 icon: 'error',
                                 title: '無效的數值',
                                 text: '數值必須是數字且不得小於1',
-                                background: '#3d454d',
+                                background: '#403734',
                                 color: '#ffffff'
                             });
                             return; // 阻止提交
@@ -217,7 +246,7 @@
                                 icon: 'error',
                                 title: '無效的數值',
                                 text: '數值不能為 0 或負數',
-                                background: '#3d454d',
+                                background: '#403734',
                                 color: '#ffffff'
                             });
                             return; // 阻止提交
@@ -242,7 +271,7 @@
                                 icon: 'success',
                                 title: '數據新增成功',
                                 text: '成功新增了數據',
-                                background: '#3d454d',
+                                background: '#403734',
                                 color: '#ffffff'
                             });
                             loadHealthData(userId);
@@ -253,7 +282,7 @@
                                 icon: 'error',
                                 title: '新增數據失敗',
                                 text: '請稍後再試',
-                                background: '#3d454d',
+                                background: '#403734',
                                 color: '#ffffff'
                             });
                         });
@@ -300,7 +329,7 @@
                                         confirmButtonText: '保存',
                                         cancelButtonText: '取消',
                                         showCancelButton: true,
-                                        background: '#3d454d',
+                                        background: '#403734',
                                         color: '#ffffff',
                                         preConfirm: () => {
                                             const dataType = form.querySelector('#edit-dataType').value;
@@ -312,7 +341,7 @@
                                                     icon: 'error',
                                                     title: '無效的數值',
                                                     text: '數值必須是數字且不得小於1',
-                                                    background: '#3d454d',
+                                                    background: '#403734',
                                                     color: '#ffffff'
                                                 });
                                                 return; // 阻止提交
@@ -348,7 +377,7 @@
                                                     icon: 'success',
                                                     title: '數據修改成功',
                                                     text: '成功更新了數據',
-                                                    background: '#3d454d',
+                                                    background: '#403734',
                                                     color: '#ffffff'
                                                 });
                                                 loadHealthData(userId);
@@ -359,7 +388,7 @@
                                                     icon: 'error',
                                                     title: '修改數據失敗',
                                                     text: '請稍後再試',
-                                                    background: '#3d454d',
+                                                    background: '#403734',
                                                     color: '#ffffff'
                                                 });
                                             });
@@ -473,7 +502,7 @@
             showCancelButton: true,
             confirmButtonColor: '#d21f3c', // 紅色確認按鈕
             cancelButtonColor: '#6c757d', // 灰色取消按鈕
-            background: '#343a40', // 背景顏色設置為深色
+            background: '#403734', // 背景顏色設置為深色
             color: '#ffffff', // 文字顏色設置為白色
             confirmButtonText: '是的, 我要登出!',
             cancelButtonText: '取消'
@@ -484,7 +513,7 @@
                     icon: 'success',
                     title: '登出成功',
                     text: '轉跳中...',
-                    background: '#3d454d', // 背景顏色設置為深色
+                    background: '#403734', // 背景顏色設置為深色
                     color: '#ffffff', // 文字顏色設置為白色
                     showConfirmButton: false,
                     timer: 1500,
@@ -535,12 +564,12 @@
     const dataType = document.getElementById('dataType').value;
     const value = document.getElementById('value').value;
     const englishType = convertToEnglish(dataType);
-    if (isNaN(value) || parseFloat(value) <= 0) {
+    if (value === ""||isNaN(value) || parseFloat(value) <= 0) {
         Swal.fire({
             icon: 'error',
             title: '無效的數值',
             text: '數值必須是數字且不得小於1',
-            background: '#3d454d',
+            background: '#403734',
             color: '#ffffff'
         });
         return; // 阻止提交
@@ -550,7 +579,7 @@
             icon: 'error',
             title: '無效的數值',
             text: '數值不能為 0 或負數',
-            background: '#3d454d',
+            background: '#403734',
             color: '#ffffff'
         });
         return; // 阻止提交
@@ -575,7 +604,7 @@
             icon: 'success',
             title: '數據新增成功',
             text: '成功新增了數據',
-            background: '#3d454d',
+            background: '#403734',
             color: '#ffffff'
         });
         loadHealthData(userId);
@@ -586,7 +615,7 @@
             icon: 'error',
             title: '新增數據失敗',
             text: '請稍後再試',
-            background: '#3d454d',
+            background: '#403734',
             color: '#ffffff'
         });
     });
@@ -752,7 +781,7 @@ function editHealthData(id) {
                 confirmButtonText: '保存',
                 cancelButtonText: '取消',
                 showCancelButton: true,
-                background: '#3d454d',
+                background: '#403734',
                 color: '#ffffff',
                 preConfirm: () => {
                     const dataType = form.querySelector('#edit-dataType').value;
@@ -764,7 +793,7 @@ function editHealthData(id) {
                             icon: 'error',
                             title: '無效的數值',
                             text: '數值必須是數字且不得小於1',
-                            background: '#3d454d',
+                            background: '#403734',
                             color: '#ffffff'
                         });
                         return; // 阻止提交
@@ -800,7 +829,7 @@ function editHealthData(id) {
                             icon: 'success',
                             title: '數據修改成功',
                             text: '成功更新了數據',
-                            background: '#3d454d',
+                            background: '#403734',
                             color: '#ffffff'
                         });
                         loadHealthData();
@@ -811,7 +840,7 @@ function editHealthData(id) {
                             icon: 'error',
                             title: '修改數據失敗',
                             text: '數值不能為 0 或負數',
-                            background: '#3d454d',
+                            background: '#403734',
                             color: '#ffffff'
                         });
                     });
@@ -832,7 +861,7 @@ function deleteHealthData(id) {
         title: '確定要刪除這條數據嗎？',
         text: "數據刪除後將無法恢復!",
         icon: 'warning',
-        background: '#3d454d',
+        background: '#403734',
         color: '#ffffff',
         showCancelButton: true,
         confirmButtonColor: '#d21f3c',
@@ -850,7 +879,7 @@ function deleteHealthData(id) {
                     icon: 'success',
                     title: '刪除成功',
                     text: '數據刪除成功',
-                    background: '#3d454d',
+                    background: '#403734',
                     color: '#ffffff'
                 });
                 loadHealthData(userId);
@@ -861,7 +890,7 @@ function deleteHealthData(id) {
                     icon: 'error',
                     title: '刪除失敗',
                     text: '數據刪除失敗',
-                    background: '#3d454d',
+                    background: '#403734',
                     color: '#ffffff'
                 });
             });

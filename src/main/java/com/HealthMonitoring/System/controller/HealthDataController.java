@@ -86,5 +86,12 @@ public class HealthDataController {
         }
     }
     
-    
+    @GetMapping("/chart")
+    public List<HealthData> getHealthDataForChart(@RequestParam String start, @RequestParam String end) {
+        if (start == null || start.isEmpty() || end == null || end.isEmpty()) {
+            throw new IllegalArgumentException("Start and end dates must be provided");
+        }
+        System.out.println("Received request for chart data from " + start + " to " + end);
+        return healthDataService.getHealthDataBetween(start, end);
+    }
 }

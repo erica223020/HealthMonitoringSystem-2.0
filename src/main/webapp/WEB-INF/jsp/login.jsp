@@ -22,14 +22,14 @@
                     <div class="text-center mb-4">
                         <img src="${pageContext.request.contextPath}/static/icons/LifeGuardWhite.png" alt="Logo" class="img-fluid" />
                     </div>
-                    <form method="post" action="${pageContext.request.contextPath}/user/login">
+                    <form method="post" action="${pageContext.request.contextPath}/user/login" autocomplete="on">
                         <div class="mb-3">
                             <label for="email" class="form-label">使用者信箱</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="請輸入信箱" required />
+                            <input type="email" class="form-control" id="email" name="email" placeholder="請輸入信箱" required autocomplete="username"/>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">密碼</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="請輸入密碼" required />
+                            <input type="password" class="form-control" id="password" name="password" placeholder="請輸入密碼" required autocomplete="current-password" />
                         </div>
                         <div class="mb-3">
                             <label for="captcha" class="form-label">驗證碼</label>

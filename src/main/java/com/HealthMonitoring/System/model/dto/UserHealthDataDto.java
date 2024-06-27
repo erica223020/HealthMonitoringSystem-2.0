@@ -14,4 +14,6 @@ import java.util.List;
 public class UserHealthDataDto {
     private User user;
     private List<HealthData> healthDataList;
+    
+    
 }

@@ -44,4 +44,9 @@ public class HealthDataService {
             throw new IllegalArgumentException("The health data to update does not exist.");
         }
     }
+    
+    public List<HealthData> getHealthDataBetween(String start, String end) {
+        return healthDataDao.findAllByTimestampBetween(start, end);
+    }
+    
 }

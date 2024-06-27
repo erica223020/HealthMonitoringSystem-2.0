@@ -147,3 +147,26 @@ body .modal.fade .modal-dialog {
 .bg-warning {
     color: #fff !important;
 }
+.content-wrapper {
+  background-color: #fcfaf7 !important;
+}
+
+.userpanel{
+	text-decoration-color: rgba(255, 128, 128, 0.5)!important;
+}
+.main-sidebar{
+	background-color: #403734 !important;
+}
+
+.nav-item p,.nav-icon{
+	color:#fff;
+}
+
+.active{
+	background-color: #a6452b !important; /* 橙色 */
+    color: #3d322f !important; /* 深棕色文字 */
+	
+}
+.navbar{
+	background-color: #fcfaf7 !important;
+}

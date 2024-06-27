@@ -17,8 +17,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/style.css" />
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/d6b833583a.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@barba/core"></script>
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini ">
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -196,7 +197,7 @@
                         <div class="col-12 col-md-6 mb-4">
                             <div class="card shadow-sm">
                                 <div class="card-header bg-success text-white">
-                                    <h3 class="card-title">健康小貼士</h3>
+                                    <h3 class="card-title">健康小提醒</h3>
                                 </div>
                                 <div class="card-body p-0">
                                     <ul class="list-group list-group-flush">
@@ -232,19 +233,20 @@
                                 <div class="card-body p-0">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">
-                                            最新研究表明，每天步行有助於降低心臟病風險。
+                                            <a href="https://www.edh.tw/article/36189">水果不甜≠熱量低！醫揭「減肥關鍵」不是甜度
+                                            </a>
                                         </li>
                                         <li class="list-group-item">
-                                            世界衛生組織發佈了新的飲食指南。
+                                            <a href="https://www.edh.tw/media_article/1418">想逆轉牙周病、一輩子不用植牙！醫師教你100％清潔秘招</a>
                                         </li>
                                         <li class="list-group-item">
-                                            運動與睡眠的關聯：如何在日常生活中保持健康。
+                                            <a href="https://www.edh.tw/article/36200">7歲以下兒童，國健署補助6次免費發展篩檢！快速了解篩檢時間地點</a>
                                         </li>
                                         <li class="list-group-item">
-                                            健康飲食對心理健康的重要性。
+                                            <a href="https://www.edh.tw/article/36183">45歲男鉛中毒頭痛，吃大蒜半年保住腎！醫揭「8好處」逆轉腎功能還防癌</a>
                                         </li>
                                         <li class="list-group-item">
-                                            新冠疫情後的健康管理：專家建議。
+                                            <a href="https://www.edh.tw/article/33462">168間歇斷食，這樣搭配運動瘦更快！HIIT運動燃脂秘訣一次看</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -279,6 +281,8 @@
     <script src="<c:url value='/scripts/all.js' />"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+    let userId;
+
     document.addEventListener("DOMContentLoaded", function () {
         // 初始化 AdminLTE 的 PushMenu 功能
         if (typeof $ !== 'undefined' && $.fn.PushMenu) {
@@ -342,7 +346,6 @@
                 }
             });
 
-
             // 點擊頁面其他部分時隱藏通知
             document.addEventListener("click", function (event) {
                 if (
@@ -361,7 +364,31 @@
 
             checkNewNotifications(); // 初始化檢查通知
         }
+
+        // 获取当前登录用户的ID
+        fetch('/user/current')
+            .then(response => {
+                console.log("Fetching current user data...");
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Returned data:", data); // 打印完整返回数据以确保数据格式正确
+                if (data && data.userId) {
+                    userId = data.userId;
+                    console.log("Current user ID:", userId);
+
+                    // 使用获取到的 userId 调用 loadHealthData
+                    loadHealthData(userId);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
     });
+
     function handleLogout() {
         Swal.fire({
             title: '確認登出?',
@@ -381,7 +408,7 @@
                     icon: 'success',
                     title: '登出成功',
                     text: '轉跳中...',
-                    background: '#3d454d', // 背景顏色設置為深色
+                    background: '#403734', // 背景顏色設置為深色
                     color: '#ffffff', // 文字顏色設置為白色
                     showConfirmButton: false,
                     timer: 1500,
@@ -394,14 +421,10 @@
             }
         });
     }
-    
-    $(document).ready(function() {
-        console.log("Document ready, sending AJAX request to /health-data/user/{userId}");
 
-        // 獲取當前用戶的 ID
-        var userId = 2; // 替換為你實際的用戶 ID 獲取方式
+    function loadHealthData(userId) {
+        console.log("Sending AJAX request to /health-data/user/" + userId);
 
-        // 確保 /health-data/user/{userId} API 被加載
         $.ajax({
             url: 'http://localhost:8086/health-data/user/' + userId,
             method: 'GET',
@@ -438,7 +461,7 @@
                 console.error('Error fetching health data:', error);
             }
         });
-    });
+    }
 
     function convertToChinese(dataType) {
         switch (dataType) {
@@ -454,6 +477,27 @@
                 return dataType;
         }
     }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        // 初始化 barba.js
+        barba.init({
+            transitions: [{
+                name: 'fade',
+                leave(data) {
+                    return gsap.to(data.current.container, {
+                        opacity: 0,
+                        duration: 0.5
+                    });
+                },
+                enter(data) {
+                    return gsap.from(data.next.container, {
+                        opacity: 0,
+                        duration: 0.5
+                    });
+                }
+            }]
+        });
+    });
 	</script>
 </body>
 </html>

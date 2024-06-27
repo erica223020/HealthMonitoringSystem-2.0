@@ -37,7 +37,13 @@ public class UserController {
     }
 
     @GetMapping({"/", "/index"})
-    public String showIndexPage() {
+    public String showIndexPage(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("currentUser");
+        if (currentUser == null) {
+            // 如果沒有登錄，重定向到登錄頁面
+            return "redirect:/login";
+        }
         logger.debug("Accessing index page");
         return "index"; // 返回 index.jsp
     }
@@ -58,6 +64,18 @@ public class UserController {
     public String showDataAnalysisPage() {
         logger.debug("Accessing dataAnalysis page");
         return "dataAnalysis"; // 返回 dataAnalysis.jsp
+    }
+    
+    @GetMapping("/goals")
+    public String showGoalsPage() {
+        logger.debug("Accessing goals page");
+        return "goals"; // 返回 dataAnalysis.jsp
+    }
+    
+    @GetMapping("/faq")
+    public String showFaqPage() {
+        logger.debug("Accessing Faq page");
+        return "faq"; // 返回 dataAnalysis.jsp
     }
 
     @PostMapping("/user/register")

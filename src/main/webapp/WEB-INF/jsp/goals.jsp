@@ -11,15 +11,137 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous" />
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css" />
-    <!-- 日期選擇器 Air datepicker Css -->
-    <link href="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/addRecord.css" />
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/d6b833583a.js" crossorigin="anonymous"></script>
-</head>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/addRecord.css" />
+    <style>
+body {
+    margin: 0;
+    height: 100vh;
+}
+
+.content-wrapper {
+    background-color: #fcfaf7;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.userpanel{
+	text-decoration-color: rgba(255, 128, 128, 0.5)!important;
+}
+.main-sidebar{
+	background-color: #403734 !important;
+}
+
+.nav-item p,.nav-icon{
+	color:#fff;
+}
+
+.active{
+	background-color: #a6452b !important; /* 橙色 */
+    color: #3d322f !important; /* 深棕色文字 */
+	
+}
+.navbar{
+	background-color: #f5f4f0 !important;
+}
+.content-header {
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2em;
+    color: #333;
+}
+
+.goal {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 25px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.progress-bar {
+    height: 30px;
+    width: 0;
+    border-radius: 25px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.water {
+    background-color: #76c7c0;
+}
+
+.steps {
+    background-color: #f76c6c;
+}
+
+.sleep {
+    background-color: #6c76f7;
+}
+
+.progress-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: bold;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.water-btn {
+    background-color: #76c7c0;
+}
+
+.water-btn:hover {
+    background-color: #5a9d99;
+}
+
+.steps-btn {
+    background-color: #f76c6c;
+}
+
+.steps-btn:hover {
+    background-color: #d55b5b;
+}
+
+.sleep-btn {
+    background-color: #6c76f7;
+}
+
+.sleep-btn:hover {
+    background-color: #565edf;
+}
+
+    </style>
+  </head>
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <!-- Navbar -->
+ <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -51,11 +173,11 @@
                     </div>
                 </li>
                 <li class="nav-item d-sm-inline-block">
-<form id="logoutForm" method="post" action="<c:url value='/user/logout' />" aria-label="登出">
-    <button type="button" class="btn btn-danger" style="font-weight: bold" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i> 登出
-    </button>
-</form>
+                    <form id="logoutForm" method="post" action="<c:url value='/user/logout' />" aria-label="登出">
+                        <button type="button" class="btn btn-danger" style="font-weight: bold" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt"></i> 登出
+                        </button>
+                    </form>
                 </li>
             </ul>
         </nav>
@@ -106,8 +228,9 @@
                 </nav>
             </div>
         </aside>
-      <!-- Content Wrapper -->
-      <div class="content-wrapper">
+
+        <!-- Content Wrapper -->
+<div class="content-wrapper">
         <!-- Content Header -->
         <section class="content-header">
           <div class="container-fluid">
@@ -118,31 +241,54 @@
             </div>
           </div>
         </section>
-        <!-- Main content -->
-        <section class="content">
-          <div class="container-fluid">
-            <canvas id="healthChart"></canvas>
-          </div>
+          <!-- Main content -->
+                 <section class="content">
+            <div class="goal">
+                <h2>喝水目標</h2>
+                <div class="progress-container">
+                    <div class="progress-bar water" id="waterProgressBar">
+                        <span class="progress-text" id="waterProgressText">0%(0/3000)</span>
+                    </div>
+                </div>
+                <button class="water-btn" onclick="updateProgress('waterProgressBar', 'waterProgressText', 1000, 3000)">更新喝水進度</button>
+            </div>
+            <div class="goal">
+                <h2>每日步數</h2>
+                <div class="progress-container">
+                    <div class="progress-bar steps" id="stepsProgressBar">
+                        <span class="progress-text" id="stepsProgressText">0%(0/10000)</span>
+                    </div>
+                </div>
+                <button class="steps-btn" onclick="updateProgress('stepsProgressBar', 'stepsProgressText', 5000, 10000)">更新步數進度</button>
+            </div>
+            <div class="goal">
+                <h2>睡眠目標</h2>
+                <div class="progress-container">
+                    <div class="progress-bar sleep" id="sleepProgressBar">
+                        <span class="progress-text" id="sleepProgressText">0%(0/8)</span>
+                    </div>
+                </div>
+                <button class="sleep-btn" onclick="updateProgress('sleepProgressBar', 'sleepProgressText', 6, 8)">更新睡眠進度</button>
+            </div>
         </section>
-      </div>
-      <!-- Footer -->
-        <footer class="main-footer">
-            <div class="float-right d-none d-sm-inline">版本 1.0</div>
-            <strong>版權所有 &copy; 2024 Ting健康監控系統</strong> 保留所有權利.
-        </footer>
     </div>
-    <!-- ./wrapper -->
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="float-right d-none d-sm-inline">版本 1.0</div>
+        <strong>版權所有 &copy; 2024 Ting健康監控系統</strong> 保留所有權利.
+    </footer>
+</div>
+<!-- ./wrapper -->
 
-    <!-- 日期選擇器 Air datepicker JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js"></script>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
     document.addEventListener("DOMContentLoaded", function () {
         // 初始化 AdminLTE 的 PushMenu 功能
         if (typeof $ !== 'undefined' && $.fn.PushMenu) {
@@ -206,7 +352,6 @@
                 }
             });
 
-
             // 點擊頁面其他部分時隱藏通知
             document.addEventListener("click", function (event) {
                 if (
@@ -226,6 +371,7 @@
             checkNewNotifications(); // 初始化檢查通知
         }
     });
+
     function handleLogout() {
         Swal.fire({
             title: '確認登出?',
@@ -245,7 +391,7 @@
                     icon: 'success',
                     title: '登出成功',
                     text: '轉跳中...',
-                    background: '#3d454d', // 背景顏色設置為深色
+                    background: '#403734', // 背景顏色設置為深色
                     color: '#ffffff', // 文字顏色設置為白色
                     showConfirmButton: false,
                     timer: 1500,
@@ -258,6 +404,14 @@
             }
         });
     }
-	</script>
+
+    function updateProgress(barId, textId, current, goal) {
+        var progress = (current / goal) * 100;
+        var progressBar = document.getElementById(barId);
+        var progressText = document.getElementById(textId);
+        progressBar.style.width = progress + '%';
+        progressText.textContent = Math.round(progress) + '% (' + current + ' / ' + goal + ' ) ';
+    }
+    </script>
 </body>
 </html>

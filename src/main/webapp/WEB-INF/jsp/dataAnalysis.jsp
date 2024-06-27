@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="zh-Hant-TW">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>健康數據分析 | HealthMonitoringSystem </title>
@@ -16,10 +16,38 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/addRecord.css" />
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/d6b833583a.js" crossorigin="anonymous"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/addRecord.css" />
+    <style>
+    .btn-sm{
+    margin: 0px 10px;
+}
+
+.content-wrapper {
+  background-color: #fcfaf7 !important;
+}
+
+.userpanel{
+	text-decoration-color: rgba(255, 128, 128, 0.5)!important;
+}
+.main-sidebar{
+	background-color: #403734 !important;
+}
+
+.nav-item p,.nav-icon{
+	color:#fff;
+}
+
+.active{
+	background-color: #a6452b !important; /* 橙色 */
+    color: #3d322f !important; /* 深棕色文字 */
+	
+}
+.navbar{
+	background-color: #f5f4f0 !important;
+}
+    </style>
 </head>
-  <body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -53,11 +81,11 @@
                     </div>
                 </li>
                 <li class="nav-item d-sm-inline-block">
-<form id="logoutForm" method="post" action="<c:url value='/user/logout' />" aria-label="登出">
-    <button type="button" class="btn btn-danger" style="font-weight: bold" onclick="handleLogout()">
-        <i class="fas fa-sign-out-alt"></i> 登出
-    </button>
-</form>
+                    <form id="logoutForm" method="post" action="<c:url value='/user/logout' />" aria-label="登出">
+                        <button type="button" class="btn btn-danger" style="font-weight: bold" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt"></i> 登出
+                        </button>
+                    </form>
                 </li>
             </ul>
         </nav>
@@ -108,40 +136,43 @@
                 </nav>
             </div>
         </aside>
-      <!-- Content Wrapper -->
-      <div class="content-wrapper">
-        <!-- Content Header -->
-        <section class="content-header">
-          <div class="container-fluid">
-            <div class="row mb-2">
-              <div class="col-sm-6">
-                <h1>健康數據圖表</h1>
-              </div>
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Content Header -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>健康數據圖表</h1>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <!-- 日期選擇器 -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="startDate" class="form-label">開始日期</label>
+                        <input type="text" class="form-control" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="endDate" class="form-label">結束日期</label>
+                        <input type="text" class="form-control" id="endDate" name="endDate" required>
+                    </div>
+                </div>
+                <div class="text-end mb-3">
+                    <button type="button" class="btn btn-primary" onclick="loadCharts()">顯示圖表</button>
+                </div>
+                <canvas id="lineChart" width="100" height="100"></canvas>
+                <canvas id="pieChart"  width="100" height="100"></canvas>
+                <canvas id="barChart"  width="100" height="100"></canvas>
+                <canvas id="myChart"></canvas>
             </div>
-          </div>
         </section>
-<!-- Main content -->
-<section class="content">
-    <div class="container-fluid">
-        <!-- 日期選擇器 -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="startDate" class="form-label">開始日期</label>
-                <input type="text" class="form-control" id="startDate" name="startDate" required>
-            </div>
-            <div class="col-md-6">
-                <label for="endDate" class="form-label">結束日期</label>
-                <input type="text" class="form-control" id="endDate" name="endDate" required>
-            </div>
-        </div>
-        <div class="text-end mb-3">
-            <button type="button" class="btn btn-primary" onclick="loadHealthChart()">顯示圖表</button>
-        </div>
-        <canvas id="healthChart"></canvas>
     </div>
-</section>
-      </div>
-      <!-- Footer -->
+        <!-- Footer -->
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">版本 1.0</div>
             <strong>版權所有 &copy; 2024 Ting健康監控系統</strong> 保留所有權利.
@@ -157,118 +188,164 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-        
-        document.addEventListener("DOMContentLoaded", function () {
-            // 初始化 AdminLTE 的 PushMenu 功能
-            if (typeof $ !== 'undefined' && $.fn.PushMenu) {
-                $('[data-widget="pushmenu"]').PushMenu();
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 初始化 AdminLTE 的 PushMenu 功能
+        if (typeof $ !== 'undefined' && $.fn.PushMenu) {
+            $('[data-widget="pushmenu"]').PushMenu();
+        }
+
+        // 初始化日期選擇器
+        const startDatePicker = new AirDatepicker('#startDate', {
+            locale: {
+                days: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                daysShort: ['日', '一', '二', '三', '四', '五', '六'],
+                daysMin: ['日', '一', '二', '三', '四', '五', '六'],
+                months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                today: '今天',
+                clear: '清除',
+                dateFormat: 'yyyy-MM-dd',
+                timeFormat: 'HH:mm',
+                firstDay: 1
             }
+        });
 
-            // 初始化日期選擇器
-            const startDatePicker = new AirDatepicker('#startDate', {
-                locale: {
-                    days: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-                    daysShort: ['日', '一', '二', '三', '四', '五', '六'],
-                    daysMin: ['日', '一', '二', '三', '四', '五', '六'],
-                    months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                    monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-                    today: '今天',
-                    clear: '清除',
-                    dateFormat: 'yyyy-MM-dd',
-                    timeFormat: 'HH:mm',
-                    firstDay: 1
-                }
-            });
-
-            const endDatePicker = new AirDatepicker('#endDate', {
-                locale: {
-                    days: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
-                    daysShort: ['日', '一', '二', '三', '四', '五', '六'],
-                    daysMin: ['日', '一', '二', '三', '四', '五', '六'],
-                    months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                    monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
-                    today: '今天',
-                    clear: '清除',
-                    dateFormat: 'yyyy-MM-dd',
-                    timeFormat: 'HH:mm',
-                    firstDay: 1
-                }
-            });
-
-            // 加載圖表的函數
-            function loadHealthChart() {
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
-
-                fetch(`/health-data?startDate=${startDate}&endDate=${endDate}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const labels = data.map(item => item.date);
-                        const values = data.map(item => item.value);
-
-                        const ctx = document.getElementById('healthChart').getContext('2d');
-                        const healthChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: labels,
-                                datasets: [{
-                                    label: '健康數據',
-                                    data: values,
-                                    borderColor: 'rgb(75, 192, 192)',
-                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                    fill: false,
-                                    tension: 0.1
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        display: true,
-                                        position: 'top'
-                                    },
-                                    tooltip: {
-                                        mode: 'index',
-                                        intersect: false
-                                    }
-                                },
-                                interaction: {
-                                    mode: 'nearest',
-                                    axis: 'x',
-                                    intersect: false
-                                },
-                                scales: {
-                                    x: {
-                                        display: true,
-                                        title: {
-                                            display: true,
-                                            text: '日期'
-                                        }
-                                    },
-                                    y: {
-                                        display: true,
-                                        title: {
-                                            display: true,
-                                            text: '數值'
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: '無法加載數據',
-                            text: '請稍後再試',
-                            background: '#3d454d',
-                            color: '#ffffff'
-                        });
-                    });
+        const endDatePicker = new AirDatepicker('#endDate', {
+            locale: {
+                days: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                daysShort: ['日', '一', '二', '三', '四', '五', '六'],
+                daysMin: ['日', '一', '二', '三', '四', '五', '六'],
+                months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                today: '今天',
+                clear: '清除',
+                dateFormat: 'yyyy-MM-dd',
+                timeFormat: 'HH:mm',
+                firstDay: 1
             }
+        });
+    });
+
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    function loadCharts() {
+        // 寫死的數據
+        const data = [
+            { timestamp: '2024-06-01T00:00:00.000Z', value: 75 },
+            { timestamp: '2024-06-02T00:00:00.000Z', value: 78 },
+            { timestamp: '2024-06-03T00:00:00.000Z', value: 76 },
+            { timestamp: '2024-06-04T00:00:00.000Z', value: 77 },
+            { timestamp: '2024-06-05T00:00:00.000Z', value: 80 },
+            { timestamp: '2024-06-06T00:00:00.000Z', value: 79 }
+        ];
+
+        const labels = data.map(item => new Date(item.timestamp).toLocaleDateString());
+        const values = data.map(item => item.value);
+
+        // 折線圖
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '健康數據',
+                    data: values,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // 圓餅圖
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: ['健康數據1', '健康數據2', '健康數據3'],
+                datasets: [{
+                    label: '健康數據',
+                    data: [75, 25, 50],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // 長條圖
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '健康數據',
+                    data: values,
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
 
             // 處理通知項目，初始化時檢查已讀狀態
             const notificationItems = document.querySelectorAll(".notification-item");
@@ -282,8 +359,6 @@
                 item.addEventListener("click", function () {
                     this.classList.add("read");
                     localStorage.setItem("read-" + notificationText, "true");
-                    // 這裡可以添加代碼來通知伺服器該通知已讀
-                    // markAsReadOnServer(this); // 假設有一個函數用來通知伺服器已讀狀態
                 });
             });
 
@@ -308,7 +383,7 @@
                     event.preventDefault();
                     if (dropdownMenu.classList.contains("show")) {
                         dropdownMenu.classList.remove("show");
-                        // 使用 requestAnimationFrame 確保過渡效果觸發
+                        // 使用 requestAnimationFrame 确保过渡效果触发
                         requestAnimationFrame(() => {
                             dropdownMenu.style.opacity = "0";
                         });
@@ -317,13 +392,13 @@
                         }, 500); // 讓transition生效
                     } else {
                         dropdownMenu.style.display = "block";
-                        // 使用 requestAnimationFrame 確保過渡效果觸發
+                        // 使用 requestAnimationFrame 确保过渡效果触发
                         requestAnimationFrame(() => {
                             dropdownMenu.classList.add("show");
                             dropdownMenu.style.opacity = "1";
-                            dropdownMenu.style.maxHeight = "500px"; // 設置最大高度為內容的估計高度
+                            dropdownMenu.style.maxHeight = "500px"; // 设置最大高度为内容的估计高度
                         });
-                        notificationBadge.style.display = "none"; // 點擊後隱藏紅點
+                        notificationBadge.style.display = "none"; // 点击后隐藏红点
                     }
                 });
 
@@ -345,7 +420,6 @@
 
                 checkNewNotifications(); // 初始化檢查通知
             }
-        });
 
         function handleLogout() {
             Swal.fire({
@@ -366,7 +440,7 @@
                         icon: 'success',
                         title: '登出成功',
                         text: '轉跳中...',
-                        background: '#3d454d', // 背景顏色設置為深色
+                        background: '#403734', // 背景顏色設置為深色
                         color: '#ffffff', // 文字顏色設置為白色
                         showConfirmButton: false,
                         timer: 1500,
@@ -379,6 +453,9 @@
                 }
             });
         }
+        
+
+       
     </script>
 </body>
 </html>

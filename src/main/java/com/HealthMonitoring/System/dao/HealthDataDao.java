@@ -12,4 +12,7 @@ public interface HealthDataDao extends CrudRepository<HealthData, Integer> {
 
     @Query("SELECT * FROM health_data WHERE user_id = :userId")
     List<HealthData> findAllByUserId(Integer userId);
+    
+    @Query("SELECT * FROM health_data WHERE timestamp BETWEEN :start AND :end")
+    List<HealthData> findAllByTimestampBetween(String start, String end);
 }
