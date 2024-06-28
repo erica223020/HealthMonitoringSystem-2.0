@@ -547,13 +547,13 @@
     function convertToChinese(dataType) {
         switch (dataType) {
             case "weight":
-                return "體重";
+                return "體重(kg)";
             case "blood_sugar":
-                return "血糖";
+                return "血糖(mg/dL)";
             case "blood_pressure":
-                return "脈壓";
+                return "脈壓(mmHg)";
             case "heart_rate":
-                return "心率";
+                return "心率(bpm)";
             default:
                 return dataType;
         }

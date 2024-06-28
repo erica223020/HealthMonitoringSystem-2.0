@@ -44,12 +44,17 @@
                         <a href="${pageContext.request.contextPath}/register" class="btn btn-secondary w-100 mt-2">註冊</a>
                     </form>
                                 <div class="mt-3 text-center">
-              <a href="#">忘記密碼或帳號？</a>
+              <a href="#" id="forgotLink">忘記密碼或帳號？</a>
             </div>
                 </div>
             </div>
             <div class="info-section"></div>
         </div>
+            <div id="forgotModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid black;">
+        忘記密碼或帳號了嗎？請重新註冊。
+        <br><br>
+        <button id="closeModal">確定</button>
+    </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
@@ -111,6 +116,15 @@
      setTimeout(function() {
          window.location.href = target;
      }, 1000); // 延遲1秒以顯示loading效果
+ });
+ 
+ document.getElementById('forgotLink').addEventListener('click', function(event) {
+     event.preventDefault();
+     document.getElementById('forgotModal').style.display = 'block';
+ });
+
+ document.getElementById('closeModal').addEventListener('click', function() {
+     document.getElementById('forgotModal').style.display = 'none';
  });
     </script>
 </body>
