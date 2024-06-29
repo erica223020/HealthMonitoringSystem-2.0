@@ -18,8 +18,44 @@
     <!-- 引入Date Adapter for Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/addRecord.css" />
+   <style>
+      body {
+        background-color: #fcfaf7;
+        color: #222020;
+      }
+      .container {
+         margin: 10px auto;
+         padding: 0 15px;  /* 為了讓內容不緊貼邊緣，添加水平內邊距 */
+      }
+      .container-fluid{
+       margin: 10px auto;
+         padding: 0 15px;  /* 為了讓內容不緊貼邊緣，添加水平內邊距 */
+      }
+      
+      .card {
+        background-color: #fff8e860;
+        margin-bottom: 20px;
+        height: 100%; /* 確保卡片填滿父容器 */
+      }
+      .card-body {
+        padding: 1rem;
+      }
+      .chart-container {
+        position: relative;
+        height: 300px;
+      }
+      .user-container {
+        margin-top: 20px;
+      }
+      .user-container img {
+        margin-bottom: 10px;
+      }
+      .col-md-6{
+      padding: 1rem;
+      }
+    </style>
 </head>
-<body class="hold-transition sidebar-mini ">
+<body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -75,7 +111,7 @@
                         <img src="${pageContext.request.contextPath}/static/images/sticker.jpg" class="img-circle elevation-2" alt="User Image" />
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Rich Ting</a>
+                        <a href="#" class="d-block" id="username"> Rich Ting</a>
                     </div>
                 </div>
                 <nav class="mt-2">
@@ -87,7 +123,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="/dataAnalysis" class="nav-link">
+                            <a href="/dataAnalysis" class="nav-link active">
                                 <i class="nav-icon fas fa-chart-line"></i>
                                 <p>數據分析</p>
                             </a>
@@ -136,9 +172,95 @@
                 <div class="text-end mb-3">
                     <button type="button" class="btn btn-primary" onclick="loadCharts()">顯示圖表</button>
                 </div>
-                <canvas id="lineChart" width="400" height="400"></canvas>
-                <canvas id="pieChart" width="400" height="400"></canvas>
-                <canvas id="barChart" width="400" height="400"></canvas>
+<div class=".container-fluid">
+      <div class="row">
+        <!-- 主圖表 -->
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="chart-container">
+                <canvas id="mainChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 堆疊柱狀圖 -->
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="chart-container">
+                <canvas id="stackedBarChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 分組柱狀圖 -->
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="chart-container">
+                <canvas id="groupedBarChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 餅圖 -->
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 前三名用戶 -->
+       <div class="container">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <img
+                        src="${pageContext.request.contextPath}/static/images/man1.jpg"
+                        alt="User 1"
+                        class="rounded-circle mb-2"
+                        width="100"
+                    />
+                    <p class="card-text">Allen</p>
+                    <p class="card-text">新增:65筆資料</p> <!-- 添加成績 -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <img
+                        src="${pageContext.request.contextPath}/static/images/man2.jpg"
+                        alt="User 2"
+                        class="rounded-circle mb-2"
+                        width="100"
+                    />
+                    <p class="card-text">David</p>
+                    <p class="card-text">新增:47筆資料</p> <!-- 添加成績 -->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <img
+                        src="${pageContext.request.contextPath}/static/images/man3.jpg"
+                        alt="User 3"
+                        class="rounded-circle mb-2"
+                        width="100"
+                    />
+                    <p class="card-text">Ivy</p>
+                    <p class="card-text">新增:36筆資料</p> <!-- 添加成績 -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
             </div>
         </section>
         </div>
@@ -198,110 +320,165 @@
         });
     });
 
-    function loadCharts() {
-        const data = [
-            { timestamp: '2024-06-01', value: 75 },
-            { timestamp: '2024-06-02Z', value: 78 },
-            { timestamp: '2024-06-03', value: 76 },
-            { timestamp: '2024-06-04', value: 77 },
-            { timestamp: '2024-06-05', value: 80 },
-            { timestamp: '2024-06-06', value: 79 }
-        ];
-
-        const labels = data.map(item => new Date(item.timestamp));
-        const values = data.map(item => item.value);
-
-        const lineCtx = document.getElementById('lineChart').getContext('2d');
-        new Chart(lineCtx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '健康數據',
-                    data: values,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'day',
-                            tooltipFormat: 'yyyy-MM-dd'
-                        },
-                        title: {
-                            display: true,
-                            text: '日期'
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: '值'
-                        }
-                    }
-                }
-            }
+    $(document).ready(function () {
+        $("#datepicker").datepicker({
+          language: "zh",
         });
+      });
 
-        const pieCtx = document.getElementById('pieChart').getContext('2d');
-        new Chart(pieCtx, {
-            type: 'pie',
-            data: {
-                labels: ['健康數據1', '健康數據2', '健康數據3'],
-                datasets: [{
-                    label: '健康數據',
-                    data: [75, 25, 50],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)'
-                    ],
-                    borderWidth: 1
-                }]
+      // 初始化主圖表
+      var ctxMain = document.getElementById("mainChart").getContext("2d");
+      var mainChart = new Chart(ctxMain, {
+        type: "line",
+        data: {
+          labels: [
+            "一月",
+            "二月",
+            "三月",
+            "四月",
+            "五月",
+            "六月",
+            "七月",
+          ],
+          datasets: [
+            {
+              label: "體重",
+              data: [65, 59, 80, 81, 56, 55, 40],
+              borderColor: "rgba(255, 99, 132, 1)",
+              backgroundColor: "rgba(255, 99, 132, 0.6)",
             },
-            options: {
-                responsive: true
-            }
-        });
+            {
+              label: "血糖",
+              data: [28, 48, 40, 19, 86, 27, 90],
+              borderColor: "rgba(54, 162, 235, 1)",
+              backgroundColor: "rgba(54, 162, 235, 0.6)",
+            },
+            {
+              label: "脈壓",
+              data: [45, 25, 16, 36, 67, 45, 23],
+              borderColor: "rgba(75, 192, 192, 1)",
+              backgroundColor: "rgba(75, 192, 192, 0.6)",
+            },
+            {
+              label: "心率",
+              data: [12, 34, 56, 78, 89, 45, 23],
+              borderColor: "rgba(153, 102, 255, 1)",
+              backgroundColor: "rgba(153, 102, 255, 0.6)",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
 
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        new Chart(barCtx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '健康數據',
-                    data: values,
-                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    borderWidth: 1
-                }]
+      // 初始化堆疊柱狀圖
+      var ctxStacked = document
+        .getElementById("stackedBarChart")
+        .getContext("2d");
+      var stackedBarChart = new Chart(ctxStacked, {
+        type: "bar",
+        data: {
+          labels: ["Group 1", "Group 2", "Group 3", "Group 4"],
+          datasets: [
+            {
+              label: "男性",
+              data: [65, 59, 80, 81],
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
             },
-            options: {
-                scales: {
-                    x: {
-                        beginAtZero: true
-                    },
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-    
+            {
+              label: "女性",
+              data: [28, 48, 40, 19],
+              backgroundColor: "rgba(54, 162, 235, 0.5)",
+            },
+            {
+              label: "其他",
+              data: [12, 45, 67, 34],
+              backgroundColor: "rgba(153, 102, 255, 0.5)",
+            },
+          ],
+        },
+        options: {
+          scales: {
+            x: {
+              stacked: true,
+            },
+            y: {
+              stacked: true,
+            },
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+
+      // 初始化分組柱狀圖
+      var ctxGrouped = document
+        .getElementById("groupedBarChart")
+        .getContext("2d");
+      var groupedBarChart = new Chart(ctxGrouped, {
+        type: "bar",
+        data: {
+          labels: ["Group 1", "Group 2", "Group 3", "Group 4"],
+          datasets: [
+            {
+              label: "男性",
+              data: [65, 59, 80, 81],
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+              borderColor: "rgba(255, 99, 132, 1)",
+              borderWidth: 1,
+            },
+            {
+              label: "女性",
+              data: [28, 48, 40, 19],
+              backgroundColor: "rgba(54, 162, 235, 0.5)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+            },
+            {
+              label: "其他",
+              data: [12, 45, 67, 34],
+              backgroundColor: "rgba(153, 102, 255, 0.5)",
+              borderColor: "rgba(153, 102, 255, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
+
+      // 初始化餅圖
+      var ctxPie = document.getElementById("pieChart").getContext("2d");
+      var pieChart = new Chart(ctxPie, {
+        type: "pie",
+        data: {
+          labels: ["男性", "女性", "其他"],
+          datasets: [
+            {
+              data: [65, 35, 15],
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.5)",
+                "rgba(54, 162, 235, 0.5)",
+                "rgba(153, 102, 255, 0.5)",
+              ],
+              borderColor: [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(153, 102, 255, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        },
+      });
     // 處理通知項目，初始化時檢查已讀狀態
     const notificationItems = document.querySelectorAll(".notification-item");
     notificationItems.forEach((item) => {
@@ -388,10 +565,15 @@
             return response.json();
         })
         .then(data => {
-            console.log("Returned data:", data); // 打印完整返回数据以确保数据格式正确
+        	console.log("Returned data:", data); // 打印完整返回数据以确保数据格式正确
             if (data && data.userId) {
                 userId = data.userId;
                 console.log("Current user ID:", userId);
+                
+                // 更新用户名
+                if (data.username) {
+                    document.getElementById('username').textContent = ' '+data.username;
+                }
 
                 // 使用获取到的 userId 调用 loadHealthData
                 loadHealthData(userId);
@@ -433,6 +615,7 @@ function handleLogout() {
         }
     });
 }
+
     </script>
 </body>
 </html>

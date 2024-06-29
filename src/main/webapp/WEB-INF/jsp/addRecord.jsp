@@ -100,7 +100,7 @@
                         <img src="${pageContext.request.contextPath}/static/images/sticker.jpg" class="img-circle elevation-2" alt="User Image" />
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Rich Ting</a>
+                        <a href="#" class="d-block" id="username"> Rich Ting</a>
                     </div>
                 </div>
                 <nav class="mt-2">
@@ -205,7 +205,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-        let userId;
      // 文档加载完成后的初始化逻辑
         document.addEventListener("DOMContentLoaded", function () {
             console.log("Document loaded");
@@ -493,6 +492,33 @@
             checkNewNotifications(); // 初始化檢查通知
         }
     });
+        // 获取当前登录用户的ID
+        fetch('/user/current')
+            .then(response => {
+                console.log("Fetching current user data...");
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+            	console.log("Returned data:", data); // 打印完整返回数据以确保数据格式正确
+                if (data && data.userId) {
+                    userId = data.userId;
+                    console.log("Current user ID:", userId);
+                    
+                    // 更新用户名
+                    if (data.username) {
+                        document.getElementById('username').textContent = ' '+data.username;
+                    }
+
+                    // 使用获取到的 userId 调用 loadHealthData
+                    loadHealthData(userId);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
      
     function handleLogout() {
         Swal.fire({
@@ -897,6 +923,8 @@ function deleteHealthData(id) {
         }
     });
 }
+
+
 </script>
 </body>
 </html>

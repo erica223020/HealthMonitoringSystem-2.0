@@ -41,7 +41,7 @@
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" aria-labelledby="notificationDropdown">
                         <span class="dropdown-item dropdown-header">系統通知</span>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item notification-item">您有新的健康數據待查看。</a>
+                        <a href="#" class="dropdown-item notification-item">您新增了一筆資料。</a>
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item notification-item">系統更新：新增了健康指標分析功能。</a>
                         <div class="dropdown-divider"></div>
@@ -365,7 +365,7 @@
             checkNewNotifications(); // 初始化檢查通知
         }
 
-        // 获取当前登录用户的ID
+        // 獲取當前登入用戶的ID
         fetch('/user/current')
             .then(response => {
                 console.log("Fetching current user data...");
