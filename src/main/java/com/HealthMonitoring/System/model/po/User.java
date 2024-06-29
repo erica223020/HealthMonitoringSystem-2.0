@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Builder;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
+
 
 @Data
 @NoArgsConstructor
@@ -16,6 +18,8 @@ public class User {
     private String email;       // 用戶的電子郵件地址
     private String password;    // 用戶的密碼
     private String username;    // 用戶名
+    private LocalDate birthday;   // 用戶的生日
+    private Integer age;          // 用戶的年齡
 
     @Builder.Default
     private String status = "pending"; // 用戶帳戶的狀態，預設為 'pending'

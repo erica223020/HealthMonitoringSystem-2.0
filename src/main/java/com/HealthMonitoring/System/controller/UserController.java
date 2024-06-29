@@ -3,6 +3,7 @@ package com.HealthMonitoring.System.controller;
 import com.HealthMonitoring.System.model.po.User;
 import com.HealthMonitoring.System.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,6 +86,7 @@ public class UserController {
                            @RequestParam("password") String password,
                            @RequestParam("confirmPassword") String confirmPassword,
                            @RequestParam("gender") String gender,
+                           @RequestParam("birthday") @DateTimeFormat(pattern = "yyyy/MM/dd") LocalDate birthday,
                            Model model) {
 
         logger.info("Received registration request with email: {}", email);
@@ -103,7 +106,7 @@ public class UserController {
         }
 
         // 3. 調用服務層進行註冊處理
-        boolean success = userService.register(email, username, password, gender);
+        boolean success = userService.register(email, username, password, gender, birthday);
         if (success) {
             model.addAttribute("registerSuccess", true);
             return "register"; // 註冊成功，返回註冊頁面

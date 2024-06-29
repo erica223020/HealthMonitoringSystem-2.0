@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.ObjectFactory;
+
+import java.time.LocalDate;
+import java.time.Period;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,14 +29,14 @@ public class UserService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // 检查验证码是否正确
+    // 檢查驗證碼是否正確
     public boolean validateCaptcha(String captcha) {
         HttpServletRequest request = requestFactory.getObject();
         String sessionCaptcha = (String) request.getSession().getAttribute("captcha");
 
         if (sessionCaptcha == null || !sessionCaptcha.equalsIgnoreCase(captcha)) {
-            logger.info("验证码错误。用户输入: {}, session中的验证码: {}", captcha, sessionCaptcha);
-            return false; // 验证码错误
+            logger.info("驗證碼錯誤。用戶輸入: {}, session中的驗證碼: {}", captcha, sessionCaptcha);
+            return false; // 驗證碼錯誤
         }
         return true;
     }
@@ -49,13 +53,13 @@ public class UserService {
             return false; // 用户不存在
         }
 
-        // 如果用户状态不是 active，拒绝登录
+        // 如果用戶狀態不是 active，拒绝登录
         if (user.getStatus() != null && !"active".equalsIgnoreCase(user.getStatus())) {
             logger.info("用户状态不允许登录: {}", user.getStatus());
             return false; // 用户状态不允许登录
         }
 
-        // 验证密码
+        // 驗證密碼
         boolean passwordMatch = passwordEncoder.matches(password, user.getPassword());
         logger.debug("密码匹配: {}", passwordMatch);
         if (passwordMatch) {
@@ -71,15 +75,19 @@ public class UserService {
         return userDao.findByEmail(email) != null;
     }
 
-    // 注册方法：创建新用户并保存到数据库
-    public boolean register(String email, String username, String password, String gender) {
-        // 检查 email 是否已经被注册
-        if (userDao.findByEmail(email) != null) {
-            return false; // Email 已经被注册
+    // 註冊方法：創建新用戶並保存到數據庫
+    public boolean register(String email, String username, String password, String gender, LocalDate birthday) {
+    	// 檢查 email 是否已經被註冊
+        if (emailExists(email)) {
+        	logger.info("Email already registered: {}", email);
+            return false; // Email 已經被註冊
         }
-
+        
         // 加密密码
         String encodedPassword = passwordEncoder.encode(password);
+        
+        // 計算年齡
+        int age = calculateAge(birthday);
 
         // 創建新用戶，使用建造者模式
         User newUser = User.builder()
@@ -87,6 +95,8 @@ public class UserService {
                 .username(username)
                 .password(encodedPassword)
                 .gender(gender)
+                .birthday(birthday)
+                .age(age)
                 .status("pending")
                 .build();
 
@@ -97,6 +107,11 @@ public class UserService {
         } catch (Exception e) {
             return false;
         }
+    }
+    
+    // 計算年齡方法
+    private int calculateAge(LocalDate birthday) {
+        return Period.between(birthday, LocalDate.now()).getYears();
     }
 
     // 獲取當前用戶訊息
@@ -113,7 +128,7 @@ public class UserService {
     public User findUserByEmail(String email) {
         User user = userDao.findByEmail(email);
         if (user != null) {
-            logger.debug("Found user: email={}, userId={}, username={}", user.getEmail(), user.getUserId(), user.getUsername());
+            logger.debug("Found user: email={}, userId={}, username={}, age={}", user.getEmail(), user.getUserId(), user.getAge());
             return user;
         }
         logger.info("No user found with email: {}", email);

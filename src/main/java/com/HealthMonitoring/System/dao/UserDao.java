@@ -1,5 +1,6 @@
 package com.HealthMonitoring.System.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,10 @@ public class UserDao {
             // 如果查詢成功，打印用戶信息
             logger.debug("Found user: {}", user);
             return user;
+        } catch (EmptyResultDataAccessException e) {
+            // 如果查詢結果為空，記錄警告
+            logger.warn("No user found with email: {}", email);
+            return null;
         } catch (Exception e) {
             // 如果查找失敗，打印異常信息
             logger.error("Failed to find user by email: {}", email, e);
@@ -35,12 +40,14 @@ public class UserDao {
     
 
     public int save(User user) {
-        String sql = "INSERT INTO users (email, username, password, gender, status, created_at) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, username, password, gender, birthday, age, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql, 
                                    user.getEmail(), 
                                    user.getUsername(), 
                                    user.getPassword(), 
                                    user.getGender(), 
+                                   user.getBirthday(), 
+                                   user.getAge(),     
                                    user.getStatus(), 
                                    user.getCreatedAt());
     }
