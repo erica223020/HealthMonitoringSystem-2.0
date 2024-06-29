@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/register.css" />
 	<!-- 引入 SweetAlert CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.0/dist/sweetalert2.min.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.css">
 </head>
 <body>
     <div class="container">
@@ -43,6 +45,10 @@
                             <label for="confirmPassword" class="form-label">再次確認密碼</label>
                             <input id="ConfirmPassword" class="form-control" type="password" name="confirmPassword" placeholder="請再次輸入密碼" required="required" oninput="setCustomValidity('');" onchange="if(document.getElementById('registerPassword').value != document.getElementById('ConfirmPassword').value){setCustomValidity('密碼與確認密碼不相同');}" />
                         </div>
+                    <div class="mb-3">
+                        <label for="registerBirthday" class="form-label">生日</label>
+                        <input type="text" class="form-control" id="registerBirthday" name="birthday" placeholder=" 年 / 月 / 日 " required="required" />
+                    </div>
                         <div class="mb-3">
                             <label for="registerGender" class="form-label">性別</label>
                             <select class="form-control" name="gender" required="required">
@@ -64,10 +70,27 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
-	!-- 引入 SweetAlert JS -->
+	<!-- 引入 SweetAlert JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.0/dist/sweetalert2.all.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/air-datepicker@3.5.3/air-datepicker.min.js"></script>
    <!-- 檢查是否有註冊錯誤或成功信息並顯示 SweetAlert -->
     <script>
+    
+    // 初始化日期選擇器
+    new AirDatepicker('#registerBirthday', {
+        locale: {
+            days: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+            daysShort: ['日', '一', '二', '三', '四', '五', '六'],
+            daysMin: ['日', '一', '二', '三', '四', '五', '六'],
+            months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+            monthsShort: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            today: '今天',
+            clear: '清除',
+            dateFormat: 'yyyy/MM/dd',
+            timeFormat: 'HH:mm',
+            firstDay: 1
+        }
+    });
         $(document).ready(function() {
             // 當表單提交時，顯示 Loading SweetAlert
             $('form').on('submit', function(event) {

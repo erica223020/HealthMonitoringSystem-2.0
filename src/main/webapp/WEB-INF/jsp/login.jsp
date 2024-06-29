@@ -44,7 +44,7 @@
                         <a href="${pageContext.request.contextPath}/register" class="btn btn-secondary w-100 mt-2">註冊</a>
                     </form>
                                 <div class="mt-3 text-center">
-              <a href="#" id="forgotLink">忘記密碼或帳號？</a>
+              <a href="#" id="forgotLink">忘記密碼?</a>
             </div>
                 </div>
             </div>
