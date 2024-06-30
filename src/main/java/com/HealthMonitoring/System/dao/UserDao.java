@@ -37,10 +37,24 @@ public class UserDao {
             return null; // 如果沒有找到，返回 null
         }
     }
-    
+    public User findByResetToken(String resetToken) {
+        String sql = "SELECT * FROM users WHERE reset_token = ?";
+        try {
+            logger.debug("Executing query: {} with parameter: {}", sql, resetToken);
+            User user = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(User.class), resetToken);
+            logger.debug("Found user: {}", user);
+            return user;
+        } catch (EmptyResultDataAccessException e) {
+            logger.warn("No user found with reset token: {}", resetToken);
+            return null;
+        } catch (Exception e) {
+            logger.error("Failed to find user by reset token: {}", resetToken, e);
+            return null;
+        }
+    }
 
     public int save(User user) {
-        String sql = "INSERT INTO users (email, username, password, gender, birthday, age, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, username, password, gender, birthday, age, status, created_at, reset_token, token_expiry) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql, 
                                    user.getEmail(), 
                                    user.getUsername(), 
@@ -49,6 +63,24 @@ public class UserDao {
                                    user.getBirthday(), 
                                    user.getAge(),     
                                    user.getStatus(), 
-                                   user.getCreatedAt());
+                                   user.getCreatedAt(),
+                                   user.getResetToken(),
+                                   user.getTokenExpiry());
+    }
+
+    public int update(User user) {
+        String sql = "UPDATE users SET email = ?, username = ?, password = ?, gender = ?, birthday = ?, age = ?, status = ?, created_at = ?, reset_token = ?, token_expiry = ? WHERE user_id = ?";
+        return jdbcTemplate.update(sql,
+                                   user.getEmail(),
+                                   user.getUsername(),
+                                   user.getPassword(),
+                                   user.getGender(),
+                                   user.getBirthday(),
+                                   user.getAge(),
+                                   user.getStatus(),
+                                   user.getCreatedAt(),
+                                   user.getResetToken(),
+                                   user.getTokenExpiry(),
+                                   user.getUserId());
     }
 }

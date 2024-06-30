@@ -164,7 +164,7 @@
                             <input type="text" class="form-control" id="value" name="value" required>
                         </div>
                         <div class="text-end">
-                            <button type="button" class="btn btn-primary" onclick="submitHealthData()">提交</button>
+                            <button type="button" class="btn btn-success" onclick="submitHealthData()">提交</button>
                         </div>
                     </form>
 

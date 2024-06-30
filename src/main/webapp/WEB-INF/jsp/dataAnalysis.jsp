@@ -227,7 +227,7 @@
                         width="100"
                     />
                     <p class="card-text">Allen</p>
-                    <p class="card-text">65筆資料</p> <!-- 添加成績 -->
+                    <p class="card-text">32筆資料</p> <!-- 添加成績 -->
                 </div>
             </div>
         </div>
@@ -241,7 +241,7 @@
                         width="100"
                     />
                     <p class="card-text">David</p>
-                    <p class="card-text">47筆資料</p> <!-- 添加成績 -->
+                    <p class="card-text">27筆資料</p> <!-- 添加成績 -->
                 </div>
             </div>
         </div>
@@ -255,7 +255,7 @@
                         width="100"
                     />
                     <p class="card-text">Ivy</p>
-                    <p class="card-text">36筆資料</p> <!-- 添加成績 -->
+                    <p class="card-text">23筆資料</p> <!-- 添加成績 -->
                 </div>
             </div>
         </div>
@@ -318,8 +318,6 @@
         if (typeof $ !== 'undefined' && $.fn.PushMenu) {
             $('[data-widget="pushmenu"]').PushMenu();
         }
-        
-
 
         // 初始化日期選擇器
         const startDatePicker = new AirDatepicker('#startDate', {
@@ -463,6 +461,16 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+        	  title: {
+        		  display: true,
+        		  text: '健康數據趨勢圖',  // 主圖表標題
+        		  font: {
+        			  size: 20
+        		  }
+        		  }
+        	  }
+          
         },
       });
 
@@ -510,6 +518,15 @@
           },
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+        	  title: {
+        		  display: true,
+        		  text: '性別與年齡健康數據量比較',  
+        		  font: {
+        			  size: 20
+        		  }
+        		  }
+        	  }
         },
       });
 
@@ -549,6 +566,15 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+        	  title: {
+        		  display: true,
+        		  text: '性別與年齡健康數據量比較雷達圖',  
+        		  font: {
+        			  size: 20
+        		  }
+        		  }
+        	  }
         },
       });
 
@@ -578,6 +604,15 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+        	  title: {
+        		  display: true,
+        		  text: '用戶性別比例',  
+        		  font: {
+        			  size: 20
+        		  }
+        		  }
+        	  }
         },
       });
     }

@@ -134,4 +134,8 @@ public class UserService {
         logger.info("No user found with email: {}", email);
         return null;
     }
+    // 添加加密密码的方法
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password);
+    }
 }
