@@ -282,11 +282,44 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
+    // 數據轉換英文
+    function convertToEnglish(dataType) {
+        switch (dataType) {
+            case "體重":
+                return "weight";
+            case "血糖":
+                return "blood_sugar";
+            case "脈壓":
+                return "blood_pressure";
+            case "心率":
+                return "heart_rate";
+            default:
+                return dataType;
+        }
+    }
+
+    // 數據轉換中文
+    function convertToChinese(dataType) {
+        switch (dataType) {
+            case "weight":
+                return "體重";
+            case "blood_sugar":
+                return "血糖";
+            case "blood_pressure":
+                return "脈壓";
+            case "heart_rate":
+                return "心率";
+            default:
+                return dataType;
+        }
+    }
     document.addEventListener("DOMContentLoaded", function () {
         // 初始化 AdminLTE 的 PushMenu 功能
         if (typeof $ !== 'undefined' && $.fn.PushMenu) {
             $('[data-widget="pushmenu"]').PushMenu();
         }
+        
+
 
         // 初始化日期選擇器
         const startDatePicker = new AirDatepicker('#startDate', {
@@ -320,52 +353,108 @@
         });
     });
 
-    $(document).ready(function () {
-        $("#datepicker").datepicker({
-          language: "zh",
+    // 获取当前登录用户的ID
+    fetch('/user/current')
+        .then(response => {
+            console.log("Fetching current user data...");
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Returned data:", data); // 打印完整返回数据以确保数据格式正确
+            if (data && data.userId) {
+                userId = data.userId;
+                console.log("Current user ID:", userId);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
         });
-    });
 
     function loadCharts() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+
+        if (!startDate || !endDate) {
+            alert("請選擇開始和結束日期");
+            return;
+        }
+        
+        console.log("Selected start date:", startDate);
+        console.log("Selected end date:", endDate);
+        
+        // 顯示圖表
         $(".chart-section").show();
+        
+     // 發出請求獲取健康數據
+        fetch('/health-data/chart?start='+startDate+'&end='+endDate)
+        .then(response => response.json())
+        .then(data => {
+            // 處理返回的數據並繪製圖表
+            drawCharts(data);
+        })
+        .catch(error => {
+            console.error('Error fetching health data:', error);
+        });
+}
+    
+    function drawCharts(data) {
+    	
+        console.log("Drawing charts with data:", data);
+        
+        // 將數據按日期分組
+        const groupedData = {};
+        data.forEach(item => {
+            const date = new Date(item.timestamp).toLocaleDateString();
+            if (!groupedData[date]) {
+                groupedData[date] = {};
+            }
+            groupedData[date][convertToEnglish(item.dataType)] = item.value;
+        });
+        
+        // 提取標籤和數據集
+        const labels = Object.keys(groupedData);
+        const weightData = labels.map(date => groupedData[date].weight || 0);
+        const bloodSugarData = labels.map(date => groupedData[date].blood_sugar || 0);
+        const pulsePressureData = labels.map(date => groupedData[date].blood_pressure || 0);
+        const heartRateData = labels.map(date => groupedData[date].heart_rate || 0);
 
-
-      // 初始化主圖表
-      var ctxMain = document.getElementById("mainChart").getContext("2d");
-      var mainChart = new Chart(ctxMain, {
+        console.log("Labels:", labels);
+        console.log("Weight Data:", weightData);
+        console.log("Blood Sugar Data:", bloodSugarData);
+        console.log("Pulse Pressure Data:", pulsePressureData);
+        console.log("Heart Rate Data:", heartRateData);
+        
+     // 初始化主圖表
+        var ctxMain = document.getElementById("mainChart").getContext("2d");
+        var mainChart = new Chart(ctxMain, {
         type: "line",
         data: {
-          labels: [
-            "一月",
-            "二月",
-            "三月",
-            "四月",
-            "五月",
-            "六月",
-            "七月",
-          ],
-          datasets: [
+            labels: labels,
+            datasets: [
             {
-              label: "體重",
-              data: [65, 59, 80, 81, 56, 55, 40],
+              label: "體重(kg)",
+              data: weightData,
               borderColor: "rgba(255, 99, 132, 1)",
               backgroundColor: "rgba(255, 99, 132, 0.6)",
-            },
+      		},
             {
-              label: "血糖",
-              data: [28, 48, 40, 19, 86, 27, 90],
+              label: "血糖(mg/dL)",
+              data: bloodSugarData,
               borderColor: "rgba(54, 162, 235, 1)",
               backgroundColor: "rgba(54, 162, 235, 0.6)",
             },
             {
-              label: "脈壓",
-              data: [45, 25, 16, 36, 67, 45, 23],
+                label: "脈壓(mmHg)",
+                data: pulsePressureData,
               borderColor: "rgba(75, 192, 192, 1)",
               backgroundColor: "rgba(75, 192, 192, 0.6)",
             },
             {
-              label: "心率",
-              data: [12, 34, 56, 78, 89, 45, 23],
+              label: "心率(bpm)",
+              data: heartRateData,
               borderColor: "rgba(153, 102, 255, 1)",
               backgroundColor: "rgba(153, 102, 255, 0.6)",
             },
@@ -385,25 +474,25 @@
       var stackedBarChart = new Chart(ctxStacked, {
         type: "bar",
         data: {
-          labels: ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5"],
+          labels: ["18歲以下", "18-34歲", "35-50 歲", "51-64 歲", "65 歲以上"],
           datasets: [
               {
                 label: "男性",
-                data: [65, 59, 80, 81,60],
+                data: [4, 59, 55, 71,8],
                 backgroundColor: "rgba(255, 99, 132, 0.5)",
                 borderColor: "rgba(255, 99, 132, 1)",
                 borderWidth: 2,
               },
               {
                 label: "女性",
-                data: [28, 48, 40, 19,60],
+                data: [10, 48, 60, 75,12],
                 backgroundColor: "rgba(54, 162, 235, 0.5)",
                 borderColor: "rgba(54, 162, 235, 1)",
                 borderWidth: 2,
               },
               {
                 label: "其他",
-                data: [12, 45, 67, 34,60],
+                data: [1, 12, 32, 45,1],
                 backgroundColor: "rgba(153, 102, 255, 0.5)",
                 borderColor: "rgba(153, 102, 255, 1)",
                 borderWidth: 2,
@@ -492,6 +581,7 @@
         },
       });
     }
+    
       
     // 處理通知項目，初始化時檢查已讀狀態
     const notificationItems = document.querySelectorAll(".notification-item");
