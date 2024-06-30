@@ -163,11 +163,11 @@
               <div class="col-md-8 offset-md-2">
                 <div class="card faq-card">
                   <div class="card-header" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false" aria-controls="faq1">
-                    如何註冊帳號？
+                    如何註冊新帳號？
                   </div>
                                     <div id="faq1" class="collapse">
                     <div class="card-body">
-                      您可以點擊右上角的註冊按鈕，填寫相關資料後完成註冊。
+                      您可以點擊右上角的登出，到登入畫面後選擇註冊，填寫相關資料後完成註冊。
                     </div>
                   </div>
                 </div>

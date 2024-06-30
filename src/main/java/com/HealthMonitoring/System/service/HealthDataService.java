@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -45,8 +47,18 @@ public class HealthDataService {
         }
     }
     
+    // 根據日期範圍查找健康數據的方法
     public List<HealthData> getHealthDataBetween(String start, String end) {
-        return healthDataDao.findAllByTimestampBetween(start, end);
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Timestamp startTimestamp = new Timestamp(dateFormat.parse(start + " 00:00:00").getTime());
+            Timestamp endTimestamp = new Timestamp(dateFormat.parse(end + " 23:59:59").getTime());
+            
+            return healthDataDao.findAllByTimestampBetween(startTimestamp, endTimestamp);
+        } catch (Exception e) {
+            logger.error("Error parsing date range: {}", e.getMessage(), e);
+            return null;
+        }
     }
     
 }

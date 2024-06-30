@@ -170,7 +170,7 @@
                     </div>
                 </div>
                 <div class="text-end mb-3">
-                    <button type="button" class="btn btn-primary" onclick="loadCharts()">顯示圖表</button>
+                    <button type="button" class="btn btn-info" onclick="loadCharts()">顯示圖表</button>
                 </div>
 <div class=".container-fluid">
       <div class="row">
@@ -194,12 +194,12 @@
             </div>
           </div>
         </div>
-        <!-- 分組柱狀圖 -->
+        <!-- 雷達圖 -->
         <div class="col-md-6">
           <div class="card">
             <div class="card-body">
               <div class="chart-container">
-                <canvas id="groupedBarChart"></canvas>
+                <canvas id="radarChart"></canvas>
               </div>
             </div>
           </div>
@@ -227,7 +227,7 @@
                         width="100"
                     />
                     <p class="card-text">Allen</p>
-                    <p class="card-text">新增:65筆資料</p> <!-- 添加成績 -->
+                    <p class="card-text">65筆資料</p> <!-- 添加成績 -->
                 </div>
             </div>
         </div>
@@ -241,7 +241,7 @@
                         width="100"
                     />
                     <p class="card-text">David</p>
-                    <p class="card-text">新增:47筆資料</p> <!-- 添加成績 -->
+                    <p class="card-text">47筆資料</p> <!-- 添加成績 -->
                 </div>
             </div>
         </div>
@@ -255,7 +255,7 @@
                         width="100"
                     />
                     <p class="card-text">Ivy</p>
-                    <p class="card-text">新增:36筆資料</p> <!-- 添加成績 -->
+                    <p class="card-text">36筆資料</p> <!-- 添加成績 -->
                 </div>
             </div>
         </div>
@@ -324,7 +324,11 @@
         $("#datepicker").datepicker({
           language: "zh",
         });
-      });
+    });
+
+    function loadCharts() {
+        $(".chart-section").show();
+
 
       // 初始化主圖表
       var ctxMain = document.getElementById("mainChart").getContext("2d");
@@ -374,29 +378,36 @@
       });
 
       // 初始化堆疊柱狀圖
+       //年齡資料數比較
       var ctxStacked = document
         .getElementById("stackedBarChart")
         .getContext("2d");
       var stackedBarChart = new Chart(ctxStacked, {
         type: "bar",
         data: {
-          labels: ["Group 1", "Group 2", "Group 3", "Group 4"],
+          labels: ["Group 1", "Group 2", "Group 3", "Group 4", "Group 5"],
           datasets: [
-            {
-              label: "男性",
-              data: [65, 59, 80, 81],
-              backgroundColor: "rgba(255, 99, 132, 0.5)",
-            },
-            {
-              label: "女性",
-              data: [28, 48, 40, 19],
-              backgroundColor: "rgba(54, 162, 235, 0.5)",
-            },
-            {
-              label: "其他",
-              data: [12, 45, 67, 34],
-              backgroundColor: "rgba(153, 102, 255, 0.5)",
-            },
+              {
+                label: "男性",
+                data: [65, 59, 80, 81,60],
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+                borderColor: "rgba(255, 99, 132, 1)",
+                borderWidth: 2,
+              },
+              {
+                label: "女性",
+                data: [28, 48, 40, 19,60],
+                backgroundColor: "rgba(54, 162, 235, 0.5)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 2,
+              },
+              {
+                label: "其他",
+                data: [12, 45, 67, 34,60],
+                backgroundColor: "rgba(153, 102, 255, 0.5)",
+                borderColor: "rgba(153, 102, 255, 1)",
+                borderWidth: 2,
+              },
           ],
         },
         options: {
@@ -413,35 +424,36 @@
         },
       });
 
-      // 初始化分組柱狀圖
-      var ctxGrouped = document
-        .getElementById("groupedBarChart")
-        .getContext("2d");
-      var groupedBarChart = new Chart(ctxGrouped, {
-        type: "bar",
+      // 初始化雷達圖
+      var ctxRadar = document.getElementById("radarChart").getContext("2d");
+      var radarChart = new Chart(ctxRadar, {
+        type: "radar",
         data: {
-          labels: ["Group 1", "Group 2", "Group 3", "Group 4"],
+          labels: ["體重", "血糖", "脈壓", "心率"],
           datasets: [
             {
-              label: "男性",
-              data: [65, 59, 80, 81],
-              backgroundColor: "rgba(255, 99, 132, 0.5)",
-              borderColor: "rgba(255, 99, 132, 1)",
-              borderWidth: 1,
+                label: "男性",
+                data: [65, 59, 90, 81],
+                backgroundColor: "rgba(255, 99, 132, 0.2)",
+                borderColor: "rgba(255, 99, 132, 1)",
+                pointBackgroundColor: "rgba(255, 99, 132, 1)",
+                borderWidth: 2
             },
             {
-              label: "女性",
-              data: [28, 48, 40, 19],
-              backgroundColor: "rgba(54, 162, 235, 0.5)",
-              borderColor: "rgba(54, 162, 235, 1)",
-              borderWidth: 1,
+                label: "女性",
+                data: [28, 48, 40, 19],
+                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                pointBackgroundColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 2
             },
             {
-              label: "其他",
-              data: [12, 45, 67, 34],
-              backgroundColor: "rgba(153, 102, 255, 0.5)",
-              borderColor: "rgba(153, 102, 255, 1)",
-              borderWidth: 1,
+                label: "其他",
+                data: [12, 55, 78, 34],
+                backgroundColor: "rgba(153, 102, 255, 0.2)",
+                borderColor: "rgba(153, 102, 255, 1)",
+                pointBackgroundColor: "rgba(153, 102, 255, 1)",
+                borderWidth: 2
             },
           ],
         },
@@ -470,7 +482,7 @@
                 "rgba(54, 162, 235, 1)",
                 "rgba(153, 102, 255, 1)",
               ],
-              borderWidth: 1,
+              borderWidth: 2,
             },
           ],
         },
@@ -479,6 +491,8 @@
           maintainAspectRatio: false,
         },
       });
+    }
+      
     // 處理通知項目，初始化時檢查已讀狀態
     const notificationItems = document.querySelectorAll(".notification-item");
     notificationItems.forEach((item) => {
