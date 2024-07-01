@@ -116,6 +116,21 @@
              }
          });
      </c:if>
+     <c:if test="${not empty adminLoginSuccess}">
+         Swal.fire({
+             icon: 'success',
+             title: '管理員登入成功',
+             text: '轉跳中...',
+             background: '#343a40', // 背景顏色設置為深色
+             color: '#ffffff', // 文字顏色設置為白色
+             showConfirmButton: false,
+             timer: 1500,
+             timerProgressBar: true,
+             willClose: () => {
+                 window.location.href = '${pageContext.request.contextPath}/admin';
+             }
+         });
+     </c:if>
  });
  
  // 當鏈接點擊時，顯示深色Loading SweetAlert

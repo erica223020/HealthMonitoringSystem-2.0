@@ -137,6 +137,14 @@ public class UserController {
             User user = userService.findUserByEmail(email);
             session.setAttribute("currentUser", user);
             model.addAttribute("loginSuccess", true);
+            
+            // 檢查用戶是否為管理員
+            if ("root@gmail.com".equals(user.getEmail())) {
+                model.addAttribute("adminLoginSuccess", true);
+            } else {
+                model.addAttribute("loginSuccess", true);
+            }
+            
             return "login"; // 登入成功，返回登入頁面等前端轉跳
         } else {
             logger.info("Login error: 無效的用戶名或密碼 for email: {}", email);

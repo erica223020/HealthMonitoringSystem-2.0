@@ -5,6 +5,9 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.HealthMonitoring.System.model.po.User;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,5 +85,23 @@ public class UserDao {
                                    user.getResetToken(),
                                    user.getTokenExpiry(),
                                    user.getUserId());
+    }
+    
+ // 添加查找所有用戶的方法
+    public List<User> findAll() {
+        String sql = "SELECT * FROM users";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+    }
+
+    // 添加按 email 模糊搜索用戶的方法
+    public List<User> findByEmailContaining(String email) {
+        String sql = "SELECT * FROM users WHERE email LIKE ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), "%" + email + "%");
+    }
+
+    // 添加更新用戶狀態的方法
+    public int updateUserStatus(int userId, String status) {
+        String sql = "UPDATE users SET status = ? WHERE user_id = ?";
+        return jdbcTemplate.update(sql, status, userId);
     }
 }

@@ -32,4 +32,5 @@ public class User {
     
     private String resetToken; // 密碼重置 token
     private Timestamp tokenExpiry; // token 過期時間
+    
 }

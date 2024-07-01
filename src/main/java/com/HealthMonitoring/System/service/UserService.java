@@ -12,6 +12,7 @@ import org.springframework.beans.factory.ObjectFactory;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,5 +138,20 @@ public class UserService {
     // 添加加密密码的方法
     public String encodePassword(String password) {
         return passwordEncoder.encode(password);
+    }
+    
+ // 搜索用戶通過Email
+    public List<User> searchUsersByEmail(String email) {
+        return userDao.findByEmailContaining(email);
+    }
+
+    // 更新用戶狀態
+    public boolean updateUserStatus(int userId, String status) {
+        return userDao.updateUserStatus(userId, status) > 0;
+    }
+
+    // 獲取所有用戶
+    public List<User> getAllUsers() {
+        return userDao.findAll();
     }
 }
