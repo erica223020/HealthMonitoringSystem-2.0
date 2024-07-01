@@ -43,18 +43,38 @@
                         <button type="submit" class="btn btn-primary w-100">登入</button>
                         <a href="${pageContext.request.contextPath}/register" class="btn btn-secondary w-100 mt-2">註冊</a>
                     </form>
-                                <div class="mt-3 text-center">
+                <div class="mt-3 text-center">
               <a href="#" id="forgotLink">忘記密碼?</a>
             </div>
                 </div>
             </div>
             <div class="info-section"></div>
         </div>
-            <div id="forgotModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid black;">
-        忘記密碼或帳號了嗎？請重新註冊。
-        <br><br>
-        <button id="closeModal">確定</button>
     </div>
+    
+ 
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="forgotPasswordModalLabel">忘記密碼</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="forgotPasswordForm">
+                        <div class="form-group">
+                            <label for="forgotEmail">請輸入您的電子郵件地址</label>
+                            <input type="email" class="form-control" id="forgotEmail" required>
+                        </div>
+                        <button type="submit" id="resetButton" class="btn btn-primary">發送重設郵件</button>
+                    </form>
+                    <div id="message" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
@@ -118,13 +138,54 @@
      }, 1000); // 延遲1秒以顯示loading效果
  });
  
- document.getElementById('forgotLink').addEventListener('click', function(event) {
-     event.preventDefault();
-     document.getElementById('forgotModal').style.display = 'block';
- });
 
- document.getElementById('closeModal').addEventListener('click', function() {
-     document.getElementById('forgotModal').style.display = 'none';
+ // 當點擊 "忘記密碼" 連結時，顯示模態框
+ $('#forgotLink').click(function(event) {
+     event.preventDefault();
+     $('#forgotPasswordModal').modal('show');
+ });
+ 
+ // 處理忘記密碼表單提交並禁用按鈕30秒
+ $('#forgotPasswordForm').submit(function(event) {
+     event.preventDefault();
+     var email = $('#forgotEmail').val();
+     var $resetButton = $('#resetButton');
+
+     // 顯示 loading 效果
+     Swal.fire({
+         title: '請稍候...',
+         text: '正在發送重設郵件',
+         icon: 'info',
+         allowOutsideClick: false,
+         didOpen: () => {
+             Swal.showLoading();
+         }
+     });
+
+     $.ajax({
+         url: '${pageContext.request.contextPath}/auth/request-reset',
+         type: 'POST',
+         data: { email: email },
+         success: function(response) {
+             Swal.close();
+             $('#message').html('<div class="alert alert-success">' + response + '</div>');
+             // 禁用按鈕並設置倒計時
+             $resetButton.prop('disabled', true);
+             var countdown = 30;
+             var interval = setInterval(function() {
+                 $resetButton.text('請稍候 (' + countdown + '秒)');
+                 countdown--;
+                 if (countdown < 0) {
+                     clearInterval(interval);
+                     $resetButton.prop('disabled', false).text('發送重設郵件');
+                 }
+             }, 1000);
+         },
+         error: function(xhr, status, error) {
+             Swal.close();
+             $('#message').html('<div class="alert alert-danger">發生錯誤，請重試。</div>');
+         }
+     });
  });
     </script>
 </body>

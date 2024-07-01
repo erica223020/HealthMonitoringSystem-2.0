@@ -189,3 +189,49 @@ body::before {
 .login-section{
 background-color: rgba(33, 34, 41, 0.3); /* 深色背景 */
 }
+
+/* login.css */
+
+/* 自定義模態框背景色和文字顏色 */
+.modal-content {
+    background-color: #f8f9fa; /* 自定義背景色 */
+    color: #343a40; /* 自定義文字顏色 */
+    border-radius: 10px; /* 圓角 */
+}
+
+/* 自定義標題樣式 */
+.modal-header {
+    border-bottom: 1px solid #dee2e6; /* 下邊框 */
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* 自定義表單樣式 */
+.modal-body .form-group {
+    margin-bottom: 1rem;
+}
+
+.modal-body .form-control {
+    border: 1px solid #ced4da; /* 邊框顏色 */
+    border-radius: 5px; /* 圓角 */
+    padding: .5rem 1rem;
+}
+
+/* 自定義按鈕樣式 */
+.modal-footer .btn {
+    padding: .5rem 1.5rem;
+}
+
+.modal-footer .btn-primary {
+    background-color: #007bff; /* 主按鈕背景色 */
+    border-color: #007bff;
+}
+
+.modal-footer .btn-secondary {
+    background-color: #6c757d; /* 次按鈕背景色 */
+    border-color: #6c757d;
+}
+
