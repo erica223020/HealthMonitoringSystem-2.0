@@ -5,6 +5,7 @@ import com.HealthMonitoring.System.model.po.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.HealthMonitoring.System.model.po.HealthData;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -153,5 +154,10 @@ public class UserService {
     // 獲取所有用戶
     public List<User> getAllUsers() {
         return userDao.findAll();
+    }
+    
+    // 新增方法：獲取用戶健康數據
+    public List<HealthData> getUserHealthDataById(Long userId) {
+        return userDao.findHealthDataByUserId(userId);
     }
 }

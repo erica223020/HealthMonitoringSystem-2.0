@@ -1,10 +1,12 @@
 package com.HealthMonitoring.System.controller;
 
 import com.HealthMonitoring.System.model.po.User;
+import com.HealthMonitoring.System.model.po.HealthData;
 import com.HealthMonitoring.System.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,5 +185,23 @@ public class UserController {
         return response;
     }
     
+ // 添加查看用戶健康數據的方法
+    @GetMapping("/admin/userHealthData")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getUserHealthData(@RequestParam("userId") Long userId) {
+        List<HealthData> healthData = userService.getUserHealthDataById(userId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy:MM:dd HH:mm");
+
+        List<Map<String, Object>> response = new ArrayList<>();
+        for (HealthData data : healthData) {
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("dataType", data.getDataType());
+            dataMap.put("value", data.getValue());
+            dataMap.put("timestamp", data.getTimestamp().toLocalDateTime().format(formatter));
+            response.add(dataMap);
+        }
+
+        return ResponseEntity.ok(response);
+    }
 
 }

@@ -5,8 +5,11 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.HealthMonitoring.System.model.po.User;
+import com.HealthMonitoring.System.model.po.HealthData;
+
 
 import java.util.List;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,5 +106,19 @@ public class UserDao {
     public int updateUserStatus(int userId, String status) {
         String sql = "UPDATE users SET status = ? WHERE user_id = ?";
         return jdbcTemplate.update(sql, status, userId);
+    }
+    
+    // 獲取用戶健康數據的方法
+    public List<HealthData> findHealthDataByUserId(Long userId) {
+        String sql = "SELECT * FROM health_data WHERE user_id = ?";
+        try {
+            logger.info("Executing query: {} with userId: {}", sql, userId);
+            List<HealthData> healthData = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(HealthData.class), userId);
+            logger.info("Health data fetched from database: {}", healthData);
+            return healthData;
+        } catch (Exception e) {
+            logger.error("Error fetching health data for userId: {}", userId, e);
+            return Collections.emptyList();
+        }
     }
 }

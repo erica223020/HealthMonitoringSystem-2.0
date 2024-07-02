@@ -18,4 +18,5 @@ public class HealthData {
     private String dataType;      // 數據類型 ('體重', '血糖', '血壓', '心率')
     private Float value;          // 數據值
     private Timestamp timestamp;  // 數據記錄的時間
+
 }
