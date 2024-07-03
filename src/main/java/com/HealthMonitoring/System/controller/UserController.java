@@ -190,14 +190,21 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getUserHealthData(@RequestParam("userId") Long userId) {
         List<HealthData> healthData = userService.getUserHealthDataById(userId);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy:MM:dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
 
         List<Map<String, Object>> response = new ArrayList<>();
         for (HealthData data : healthData) {
             Map<String, Object> dataMap = new HashMap<>();
             dataMap.put("dataType", data.getDataType());
             dataMap.put("value", data.getValue());
-            dataMap.put("timestamp", data.getTimestamp().toLocalDateTime().format(formatter));
+            
+            // 確認 timestamp 不為 null 並正確格式化
+            if (data.getTimestamp() != null) {
+                dataMap.put("timestamp", data.getTimestamp().toLocalDateTime().format(formatter));
+            } else {
+                dataMap.put("timestamp", "N/A");
+            }
+
             response.add(dataMap);
         }
 

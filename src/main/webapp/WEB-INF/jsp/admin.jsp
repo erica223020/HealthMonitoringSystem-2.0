@@ -418,7 +418,7 @@
                         const row = '<tr class="' + rowClass + '">' +
                             '<td>' + item.dataType + '</td>' +
                             '<td>' + item.value + '</td>' +
-                            '<td>' + item.formattedTimestamp + '</td>' +
+                            '<td>' + item.timestamp + '</td>' +
                             '</tr>';
                         $('#healthDataContent').append(row);
                     });
