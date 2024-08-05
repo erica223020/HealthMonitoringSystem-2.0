@@ -16,7 +16,9 @@
 * 帳號管理
 ## 技術簡介
 ### 前端
--
+* HTML
+* CSS
+* JS
 ### 後端
 * Java
 * SpringBoot
